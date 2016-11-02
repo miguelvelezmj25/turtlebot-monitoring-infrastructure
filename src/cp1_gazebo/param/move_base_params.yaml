@@ -1,0 +1,3 @@
+shutdown_costmaps: True
+recovery_behavior_enabled: False
+clearing_rotation_allowed: False
