@@ -1,13 +1,23 @@
-# localization
+# infrastructure
 
 This folder contains the scripts used to measure the performance and behavior 
 of the turtlebot. It uses a combination of Python, bash, and R scripts to execute 
 and monitor Turtlebot, and graph the results to compare and analyze the execution.
 
-## Dependencies
+## Required software
 
-This project relies on [Jetway](https://github.com/miguelvelezmj25/Jetway). This is a forked
-repo from Christian Kästner. It is meanly used to communicate with a database. 
+* [Jetway](https://github.com/miguelvelezmj25/Jetway)
+This is a forked repo from Christian Kästner. It is meanly used to communicate 
+with a database. 
+
+* [Fabric](http://www.fabfile.org/)
+This command-line tool is installed and used in the master machine or streamlining 
+the use of SSH for application deployment or systems administration tasks. It is
+used to send jobs and manage the machines that execute the experiments
+
+* [Fabfiles](https://github.com/miguelvelezmj25/fabfiles)
+This project contains collection of fabfiles used along side fabric to manage and
+send jobs to multiple machines
 
 ## Database
 
