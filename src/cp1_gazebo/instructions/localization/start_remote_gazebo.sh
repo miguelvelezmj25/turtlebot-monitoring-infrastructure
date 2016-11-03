@@ -1,6 +1,7 @@
 #!/bin/bash
+# Start gazebo in the server acting as simulator. Be aware that this would not start gazebo if you are using the same
+# machine as host
 
-# Start gazebo in the server acting as simulator
 simulator=$1
 password=$2
 

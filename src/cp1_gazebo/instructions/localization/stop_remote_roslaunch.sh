@@ -1,6 +1,7 @@
 #!/bin/bash
+# Stop ros code in the simulator server.  Be aware that this would not start gazebo if you are using the same
+# machine as host
 
-# Stop ros code in the simulator server
 simulator=$1
 password=$2
 

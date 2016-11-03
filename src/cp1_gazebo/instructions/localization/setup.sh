@@ -1,6 +1,6 @@
 #!/bin/bash
+# Determine what server should act as the simulator for this job
 
-# Used to determine what server should act as the simulator for this job
 input=".serverconfig"
 found=false
 
