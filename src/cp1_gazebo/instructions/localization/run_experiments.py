@@ -7,19 +7,40 @@ import math
 import socket
 import jetway.mdb as mdb
 
+signal.signal(signal.SIGALRM, signal_handler)
+max_run_time = 100
+max_experiment_time = 300
+ground_truth_pose = 'ground_truth_pose'
+estimate_pose = 'estimate_pose'
+cpu_monitor = 'cpu_monitor'
+amcl_monitor = 'amcl_monitor'
+move_base_monitor = 'move_base_monitor'
+navigation_configuration = {'target_x': 7, 'target_y': -10.5}
+environment_configurations = ['laser_miscalibration', 'laser_noise', 'odometry_miscalibration', 'odometry_noise']
+
 
 def signal_handler(signum, frame):
     raise SystemError("Time out")
 
 
 def get_cpu_utilization(id, time_range, nfp, utilization_data):
+    """
+
+    :param id:
+    :param time_range:
+    :param nfp:
+    :param utilization_data:
+    :return:
+    """
     cpu_data = utilization_data[:]
     filter_cpu(cpu_data)
+
     start_item = [item for item in cpu_data if item[0] == time_range[0]][0]
     end_item = [item for item in cpu_data if item[0] == time_range[1]][0]
     cpu_data = cpu_data[cpu_data.index(start_item):cpu_data.index(end_item)+1]
 
     nfp_id = mdb.get_nfp_id(nfp)
+
     for i in range(0, len(cpu_data)):
         mdb.insert('measurements_verbose', 'configuration_id, simulator, host, nfp_id, value, time', '"' + id + '", "'
                    + remote_host + '", "' + socket.gethostname() + '", ' + str(nfp_id) + ", " + str(cpu_data[i][1])
@@ -37,8 +58,18 @@ def get_cpu_utilization(id, time_range, nfp, utilization_data):
 
 
 def get_localization_uncertainty(id, duration, result, ground_truth_data, estimate_monitor_data):
+    """
+
+    :param id:
+    :param duration:
+    :param result:
+    :param ground_truth_data:
+    :param estimate_monitor_data:
+    :return:
+    """
     ground_data = ground_truth_data[:]
     estimate_data = estimate_monitor_data[:]
+
     filter_data(estimate_data)
     filter_data(ground_data, estimate_data[0][0])
 
@@ -50,9 +81,9 @@ def get_localization_uncertainty(id, duration, result, ground_truth_data, estima
         estimate_data = estimate_data[:int(float(duration)) + 1]
 
     uncertainty = []
-
     time_range = (ground_data[0][0], ground_data[-1][0])
     nfp_id = mdb.get_nfp_id('mean_localization_error')
+
     for i in range(0, len(ground_data)):
         calculation = math.sqrt(math.pow(ground_data[i][1] - estimate_data[i][1], 2)
                                 + math.pow(ground_data[i][2] - estimate_data[i][2], 2))
@@ -116,6 +147,12 @@ def filter_cpu(data):
 
 
 def filter_data(data, current_time=-1):
+    """
+
+    :param data:
+    :param current_time:
+    :return:
+    """
     if current_time == -1:
         current_time = data[0][0]
 
@@ -133,9 +170,8 @@ def filter_data(data, current_time=-1):
             if len(filtered_data) == 0:
                 filtered_data.append((current_time, (element[1] + data[i-1][1])/2, (element[2] + data[i-1][2])/2))
             else:
-                filtered_data.append((current_time, (element[1] + filtered_data[-1][1])/2, (element[2]
-                                                                                            + filtered_data[-1][2])/2))
-
+                filtered_data.append((current_time, (element[1] + filtered_data[-1][1])/2,
+                                      (element[2] + filtered_data[-1][2])/2))
             i -= 1
         elif current_time < element[0]:
             current_time = element[0]
@@ -148,6 +184,12 @@ def filter_data(data, current_time=-1):
 
 
 def run(id, configurations):
+    """
+
+    :param id:
+    :param configurations:
+    :return:
+    """
     turtlebot_remote.restart(configurations['environment'])
 
     measurements = {}
@@ -155,7 +197,6 @@ def run(id, configurations):
         signal.alarm(max_run_time)
 
         measurements = turtlebot_remote.measure(id, configurations)
-
     except SystemError, e:
         duration = max_run_time
         measurements['duration'] = duration
@@ -165,7 +206,6 @@ def run(id, configurations):
         measurements['cpu_monitor'] = turtlebot_remote.cpu_monitor_data
         measurements['amcl_monitor'] = turtlebot_remote.amcl_cpu_monitor_data
         measurements['move_base_monitor'] = turtlebot_remote.move_base_cpu_monitor_data
-
     finally:
         signal.alarm(0)
 
@@ -175,6 +215,11 @@ def run(id, configurations):
 
 
 def filter_environment_configurations(configurations):
+    """
+
+    :param configurations:
+    :return:
+    """
     settings = {}
 
     for configuration in environment_configurations:
@@ -185,13 +230,19 @@ def filter_environment_configurations(configurations):
 
 
 def build_configurations(options):
+    """
+
+    :param options:
+    :return:
+    """
     configurations = {}
 
     for option in options.split(','):
         option = option.strip()
         key, value = option.split(' ')
 
-        str(key)
+        key = str(key)
+
         if '"' in value or "'" in value:
             configurations[key] = value[1:-1]
         elif "." in value:
@@ -207,8 +258,16 @@ def build_configurations(options):
 
 
 def measure(id, environment_configurations, amcl_configurations):
+    """
+
+    :param id:
+    :param environment_configurations:
+    :param amcl_configurations:
+    :return:
+    """
     settings = {'navigation': navigation_configuration, 'environment': environment_configurations,
-                'amcl': amcl_configurations}
+                'amcl': amcl_configurations
+                }
 
     measurements = run(id, settings)
 
@@ -236,17 +295,6 @@ def measure(id, environment_configurations, amcl_configurations):
         print 'Error when processing mean amcl cpu utilization'
 
 
-signal.signal(signal.SIGALRM, signal_handler)
-max_run_time = 100
-max_experiment_time = 300
-ground_truth_pose = 'ground_truth_pose'
-estimate_pose = 'estimate_pose'
-cpu_monitor = 'cpu_monitor'
-amcl_monitor = 'amcl_monitor'
-move_base_monitor = 'move_base_monitor'
-navigation_configuration = {'target_x': 7, 'target_y': -10.5}
-environment_configurations = ['laser_miscalibration', 'laser_noise', 'odometry_miscalibration', 'odometry_noise']
-
 if __name__ == '__main__':
     try:
         signal.alarm(max_experiment_time)
@@ -263,7 +311,7 @@ if __name__ == '__main__':
             id = mdb.get_next_todo()
 
         if id is not None:
-            options = mdb.exec_sql_one('select options from configurations where id = "{0}"'.format(id))
+            options = mdb.exec_sql_one('select options from configurations where id = "{}"'.format(id))
             configurations = build_configurations(options)
             environment_configurations = filter_environment_configurations(configurations)
             measure(id, environment_configurations, configurations)
