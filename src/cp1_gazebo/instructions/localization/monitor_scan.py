@@ -2,6 +2,7 @@
 
 import sys
 import ast
+import numpy
 import rospy
 from sensor_msgs.msg import LaserScan
 
@@ -14,9 +15,26 @@ publisher = rospy.Publisher('/scan_altered', LaserScan, queue_size=queue_capacit
 
 
 def scan_callback(data):
-    if gamma > 0:
-        new_values = []
+    """
 
+    :param data:
+    :return:
+    """
+    new_values = []
+
+    if delta > 0 and gamma > 0:
+        for value in data.ranges:
+            new_value = numpy.random.normal(value * (1 + gamma), value * delta)
+            new_values.append(new_value)
+
+        data.ranges = new_values
+    elif delta > 0:
+        for value in data.ranges:
+            new_value = numpy.random.normal(value, value * delta)
+            new_values.append(new_value)
+
+        data.ranges = new_values
+    elif gamma > 0:
         for value in data.ranges:
             new_values.append(value * (1 + gamma))
 
