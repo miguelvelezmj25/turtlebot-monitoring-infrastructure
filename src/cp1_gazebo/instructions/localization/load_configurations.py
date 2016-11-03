@@ -207,7 +207,7 @@ odometry_options_boolean = [('tf_broadcast', True)]
 amcl_options_not_in_website = ['beam_skip_distance', 'beam_skip_threshold', 'first_map_only', 'restore_defaults',
                                'do_beamskip']
 
-miscalibration = [('laser_miscalibration', 0, -0.5, 0.5)]
+miscalibration = [('laser_miscalibration', 0, -0.5, 0.5), ('laser_noise', 0, -0.5, 0.5)]
 
 miscalibration_to_explore = ['laser_miscalibration']
 miscalibration_to_explore_values = [[-0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5]]
