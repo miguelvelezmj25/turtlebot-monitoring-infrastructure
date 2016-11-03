@@ -7,7 +7,6 @@ import math
 import socket
 import jetway.mdb as mdb
 
-signal.signal(signal.SIGALRM, signal_handler)
 max_run_time = 100
 max_experiment_time = 300
 ground_truth_pose = 'ground_truth_pose'
@@ -294,6 +293,8 @@ def measure(id, environment_configurations, amcl_configurations):
     except:
         print 'Error when processing mean amcl cpu utilization'
 
+
+signal.signal(signal.SIGALRM, signal_handler)
 
 if __name__ == '__main__':
     try:
