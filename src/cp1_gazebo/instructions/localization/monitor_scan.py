@@ -8,21 +8,24 @@ from sensor_msgs.msg import LaserScan
 
 gamma = 0
 delta = 0
-laser_miscalibration = 'laser_miscalibration'
-laser_noise = 'laser_noise'
 queue_capacity = 1000
+
 publisher = rospy.Publisher('/scan_altered', LaserScan, queue_size=queue_capacity)
 
 
 def scan_callback(data):
     """
+    scan_callback(data)
 
-    :param data:
-    :return:
+    This is the callback function for the /scan subscriber. It adds miscalibration and noise to the scan array based on
+    the parameters specified by the user. It publishes the new data to a new topic.
+
+    :param data: The message from the /scan topic
     """
     new_values = []
 
     if delta > 0 and gamma > 0:
+        # This is an interaction between two configurations
         for value in data.ranges:
             new_value = numpy.random.normal(value * (1 + gamma), value * delta)
             new_values.append(new_value)
@@ -44,6 +47,9 @@ def scan_callback(data):
 
 
 if __name__ == '__main__':
+    laser_miscalibration = 'laser_miscalibration'
+    laser_noise = 'laser_noise'
+
     args = sys.argv[-1]
 
     if len(args) == 0:
