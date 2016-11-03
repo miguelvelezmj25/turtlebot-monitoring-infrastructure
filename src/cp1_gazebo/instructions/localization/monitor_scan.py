@@ -14,13 +14,13 @@ publisher = rospy.Publisher('/scan_altered', LaserScan, queue_size=queue_capacit
 
 
 def scan_callback(data):
-    # if gamma > 0:
-    #     new_values = []
-    #
-    #     for value in data.ranges:
-    #         new_values.append(value * (1 + gamma))
-    #
-    #     data.ranges = new_values
+    if gamma > 0:
+        new_values = []
+
+        for value in data.ranges:
+            new_values.append(value * (1 + gamma))
+
+        data.ranges = new_values
 
     publisher.publish(data)
 
