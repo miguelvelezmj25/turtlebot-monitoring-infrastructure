@@ -1,27 +1,37 @@
-# infrastructure
+# Infrastructure
 
 This folder contains the scripts used to measure the performance and behavior 
-of the turtlebot. It uses a combination of Python, bash, and R scripts to execute 
-and monitor Turtlebot, and graph the results to compare and analyze the execution.
+of the TurtleBot. It uses a combination of Python, bash, and R scripts to execute 
+and monitor TurtleBot, and graph the results to compare and analyze the execution.
+<!--ADD IMAGE OF INFRASTRUCTURE-->
 
-## Required software
+## Required Software
 
 * [Jetway](https://github.com/miguelvelezmj25/Jetway)
 This is a forked repo from Christian Kästner. It is meanly used to communicate 
 with a database. 
 
 * [Fabric](http://www.fabfile.org/)
-This command-line tool is installed and used in the master machine or streamlining 
+This command-line tool is installed and used in the master machine for streamlining 
 the use of SSH for application deployment or systems administration tasks. It is
 used to send jobs and manage the machines that execute the experiments
 
 * [Fabfiles](https://github.com/miguelvelezmj25/fabfiles)
-This project contains collection of fabfiles used along side fabric to manage and
+This project contains a collection of fabfiles used along side Fabric to manage and
 send jobs to multiple machines
+
+* sshpass 
+This Linux utility allows to run ssh using the mode referred to as "keyboard-interactive" 
+password authentication, but in non-interactive mode. This is used in a bash scripts
+to initialize and terminate processes for the gazebo simulator in order machines.
+
+* mpstat (part of Sysstat)
+This Linux command writes to standard output activities for each available processor.
+It is used to measure CPU utilization of an entire machine.
 
 ## Database
 
-This project requires a database to store the configurations of turtlebot, the time
+This project requires a database to store the configurations of TurtleBot, the time
 series and summary measurements, the non-functional properties to be measured, and
 jobs to do. The following is the DDL from the database we currently use
 
