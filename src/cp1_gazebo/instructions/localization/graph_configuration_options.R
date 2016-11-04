@@ -97,7 +97,11 @@ while (server <= length(servers))
     title(paste(option, '_', nfp, '_', server_name, sep=''))
     lines(x, y)
     arrows(x, y-sd, x, y+sd, length=0.05, angle=90, code=3)
+
+    if(!default == 'NA')
+    {
     abline(v=default, col='blue', lwd=3, lty=2)
+    }
 
     dev.off()
 

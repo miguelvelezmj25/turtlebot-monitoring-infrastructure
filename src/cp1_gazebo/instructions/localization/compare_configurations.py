@@ -12,11 +12,13 @@ compare_configurations_r_script = './compare_configurations.R '
 graph_configuration_options_r_script = './graph_configuration_options.R '
 
 
-def graph_configuration_options(configuration, id_option_tuples=None):
+def graph_configuration_options(configuration, default=None, id_option_tuples=None):
     """
     graph_options(options, tuples=None)
 
-    Graph all options for a specific
+    Graph all options for a specific configuration.
+
+    :param default:
     :param configuration:
     :param id_option_tuples:
     """
@@ -30,6 +32,8 @@ def graph_configuration_options(configuration, id_option_tuples=None):
     if id_option_tuples is None:
         id_option_tuples = mdb.exec_sql('select id, options from configurations where options like "{}%" '
                                         'ORDER BY options'.format(configuration))
+
+    mdb.shutdown()
 
     # Use ordered dictionary to keep track of order
     options_ids = collections.OrderedDict()
@@ -72,6 +76,13 @@ def graph_configuration_options(configuration, id_option_tuples=None):
 
         r_arguments = configuration + ' ' + nfp + ' '
 
+        if default is None:
+            r_arguments += 'NA'
+        else:
+            r_arguments += str(default)
+
+        r_arguments += ' '
+
         for server in servers:
             r_arguments += server
             r_arguments += ' '
@@ -83,10 +94,13 @@ def graph_configuration_options(configuration, id_option_tuples=None):
 
         subprocess.call('Rscript ' + graph_configuration_options_r_script + r_arguments, shell=True)
 
-    mdb.shutdown()
-
 
 def compare_configuration(configuration):
+    """
+    compare_configuration(configuration)
+
+    :param configuration:
+    """
     mdb.startup(turtlebot_explore_db)
     nfps_tuple = mdb.exec_sql('select name from nfps')
 
@@ -94,7 +108,7 @@ def compare_configuration(configuration):
     for nfp in nfps_tuple:
         nfps.append(str(nfp[0]))
 
-    configuration_ids_tuples = mdb.exec_sql('select id from configurations where options like "{0}%"'.format(configuration))
+    configuration_ids_tuples = mdb.exec_sql('select id from configurations where options like "{}%"'.format(configuration))
     mdb.shutdown()
 
     configuration_ids = []
@@ -151,11 +165,22 @@ def compare_laser_options():
 
 
 def graph_particle_filter_options():
+    """
+    graph_particle_filter_options()
+
+    Graph all options of all the configurations in the particle filter that are worth exploring
+    """
     for option in configurations.filter_options_to_explore:
-        graph_configuration_options(option)
+        default = [item for item in configurations.filter_options if item[0] == option][0][1]
+        graph_configuration_options(option, default)
 
 
 def graph_particle_filter_options_combine():
+    """
+    graph_particle_filter_options_combine()
+
+    Graph all options of all the combine configurations in the particle filter that are worth exploring
+    """
     mdb.startup(turtlebot_explore_db)
 
     for options in configurations.filter_options_combine_to_explore:
@@ -166,10 +191,12 @@ def graph_particle_filter_options_combine():
             combine_option += option + '%, '
 
         combine_option = combine_option[:-3]
-        print combine_option
         tuples = mdb.exec_sql('select id, options from configurations where options like "{0}%" '
                               'and options not like "{0}%,%" ORDER BY options'.format(combine_option))
 
-        graph_configuration_options(name, tuples)
+        graph_configuration_options(name, id_option_tuples=tuples)
 
     mdb.shutdown()
+
+
+graph_particle_filter_options_combine()
