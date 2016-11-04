@@ -6,6 +6,9 @@ servers = ['feature3.andrew.cmu.edu', 'feature6.andrew.cmu.edu', 'feature8.andre
              'feature10.andrew.cmu.edu', 'feature4.andrew.cmu.edu', 'feature7.andrew.cmu.edu', 'feature9.andrew.cmu.edu',
              'feature11.andrew.cmu.edu']
 
+# Note that whichever mixture weights are in use should sum to 1.
+# The beam model uses all 4: z_hit, z_short, z_max, and z_rand.
+# The likelihood_field model uses only 2: z_hit and z_rand.
 
 def add_default_configuration(db):
     mdb.startup(db)
@@ -96,8 +99,8 @@ def add_configurations_to_explore(db, configurations, values):
             else:
                 id = mdb.add_configuration(option)
 
-            mdb.add_todo(id, 10, worker=servers[0])
-            mdb.add_todo(id, 10, worker=servers[1])
+            mdb.add_todo(id, 10, worker=servers[2])
+            mdb.add_todo(id, 10, worker=servers[3])
             # for server in servers:
             #     mdb.add_todo(id, 5, worker=server)
 
@@ -189,6 +192,7 @@ filter_options_combine_to_explore = [('particles', 'min_particles', 'max_particl
 filter_options_combine_to_explore_values = [[5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700,
                                              800, 900, 1000]]
 
+
 laser_options = [('laser_max_beams', 30, 1, 100), ('laser_z_hit', 0.95, 0.1, 10.0), ('laser_z_short', 0.1, 0.01, 10.0),
                  ('laser_z_max', 0.05, 0.01, 10.0), ('laser_z_rand', 0.05, 0.01, 10.0),
                  ('laser_sigma_hit', 0.2, 0.1, 10.0), ('laser_lambda_short', 0.1, 0.01, 10.0),
@@ -197,6 +201,20 @@ laser_options = [('laser_max_beams', 30, 1, 100), ('laser_z_hit', 0.95, 0.1, 10.
 laser_options_combine = [('laser_min_range', -1.0, 1.0, 1000.0), ('laser_max_range', -1.0, 1.0, 1000.0)]
 laser_options_string = [('laser_model_type', "'likelihood_field'")]
 
+laser_options_to_explore = ['laser_max_beams', 'laser_z_hit', 'laser_z_short', 'laser_z_max', 'laser_z_rand',
+                            'laser_sigma_hit', 'laser_lambda_short', 'laser_likelihood_max_dist'
+                            ]
+laser_options_to_explore_values = [[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+                                   [0.1, 0.95, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                   [0.01, 0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                   [0.01, 0.05, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                   [0.01, 0.05, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                   [0.1, 0.2, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                   [0.01, 0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                   [0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 15.0, 20.0]
+                                   ]
+
+
 odometry_options = [('odom_alpha1', 0.2, 0.1, 10.0), ('odom_alpha2', 0.2, 0.1, 10.0), ('odom_alpha3', 0.2, 0.1, 10.0),
                     ('odom_alpha4', 0.2, 0.1, 10.0), ('odom_alpha5', 0.2, 0.1, 10.0)
                     ]
@@ -204,11 +222,12 @@ odometry_options_string = [('odom_model_type', "'diff'"), ('odom_frame_id', "'od
                            ('global_frame_id', "'map'")]
 odometry_options_boolean = [('tf_broadcast', True)]
 
+
 amcl_options_not_in_website = ['beam_skip_distance', 'beam_skip_threshold', 'first_map_only', 'restore_defaults',
                                'do_beamskip']
 
-miscalibration = [('laser_miscalibration', 0, -0.5, 0.5), ('laser_noise', 0, -0.5, 0.5)]
 
+miscalibration = [('laser_miscalibration', 0, -0.5, 0.5), ('laser_noise', 0, -0.5, 0.5)]
 miscalibration_to_explore = ['laser_miscalibration', 'laser_noise']
 miscalibration_to_explore_values = [[-0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5],
                                     [-0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
