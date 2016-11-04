@@ -12,7 +12,8 @@ cbind.fill <- function(...){
 
 option = args[1]
 nfp = args[2]
-args = args[3:length(args)]
+default = args[3]
+args = args[4:length(args)]
 data_folder = "./data/"
 plot_folder = "./plots/"
 default_options_file = 'e26ab2de-93ae-11e6-bf5b-000c290c1bad_data.csv'
@@ -81,24 +82,24 @@ while (server <= length(servers))
         i = i + 1
     }
 
-    default_data = read.csv(paste(data_folder, nfp, '_', default_options_file, sep=''))
-    default_data = as.data.frame(default_data)
-    default_data = default_data[[as.character(server_name)]]
-    default_data = replace(default_data, default_data>36, NA)
+#    default_data = read.csv(paste(data_folder, nfp, '_', default_options_file, sep=''))
+#    default_data = as.data.frame(default_data)
+#    default_data = default_data[[as.character(server_name)]]
+#    default_data = replace(default_data, default_data>36, NA)
 
     max_y = max(y_total_max, na.rm=TRUE) + 0.025
     min_y = min(y_total_min, na.rm=TRUE) - 0.025
 
-    png(file = paste(plot_folder, option, '_', nfp, '_', server_name, '.png', sep=''))
-    plot(x, y, pch=19, xlab="option", ylab="value", xlim=c(x[1], x[sum(!is.na(y))]), ylim=c(min_y, max_y))
+    png(file = paste(plot_folder, option, '_', nfp, '_', server_name, '.png', sep=''), width=1100,height=1100,res=150)
+    par(mai=c(1.02,1.02,0.82,0.42))
+    plot(x, y, pch=19, xlab="Option", ylab="Value", xlim=c(x[1], x[sum(!is.na(y))]), ylim=c(min_y, max_y))
 #    plot(x, y, pch=19, xlab="option", ylab="value", xlim=c(x[1], x[y_length]))
     title(paste(option, '_', nfp, '_', server_name, sep=''))
     lines(x, y)
     arrows(x, y-sd, x, y+sd, length=0.05, angle=90, code=3)
-    abline(h=mean(default_data, na.rm=TRUE), col='red', lwd=3, lty=2)
+    abline(v=default, col='blue', lwd=3, lty=2)
 
     dev.off()
-
 
     server = server + 1
 }
