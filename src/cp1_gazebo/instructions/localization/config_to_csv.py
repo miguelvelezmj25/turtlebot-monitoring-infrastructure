@@ -6,6 +6,9 @@ file_extension = '_data.csv'
 
 
 def save_data():
+    """
+    For all hosts and configurations, save the data in csv files
+    """
     mdb.startup(turtlebot_explore_db)
     hosts_tuple = mdb.exec_sql('select DISTINCT host from measurements where host like "%.andrew%" order by host')
 
@@ -26,6 +29,14 @@ def save_data():
 
 
 def save(configuration_id, hosts, file_name):
+    """
+    save(configuration_id, hosts, file_name)
+
+    For each host, save the individuals values of a configuration in a csv file
+    :param configuration_id:
+    :param hosts:
+    :param file_name:
+    """
     nfps_tuple = mdb.exec_sql('select name from nfps')
 
     nfps = []
@@ -39,7 +50,6 @@ def save(configuration_id, hosts, file_name):
         for host in hosts:
             data_tuple = mdb.exec_sql('select value from measurements where host = "' + host + '" and nfp_id = '
                                       + str(nfp_id) + ' and configuration_id = "' + configuration_id + '"')
-
             data = []
 
             for value in data_tuple:
@@ -57,8 +67,8 @@ def save(configuration_id, hosts, file_name):
                 max_length = len(list)
 
         data_file = open(data_folder + nfp + '_' + file_name, "w", 0)
-
         i = 0
+
         for host in host_to_data:
             if i > 0:
                 data_file.write(',')
@@ -72,12 +82,14 @@ def save(configuration_id, hosts, file_name):
 
         while row < max_length:
             i = 0
+
             for host in host_to_data:
                 if i > 0:
                     data_file.write(',')
 
                 if row < len(host_to_data[host]):
                     data_file.write(str(host_to_data[host][row]))
+
                 i += 1
 
             data_file.write('\n')
