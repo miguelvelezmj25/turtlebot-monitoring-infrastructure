@@ -8,7 +8,7 @@ turtlebot_explore_db = 'turtlebot-explore'
 data_folder = './data/'
 file_extension = '_data.csv'
 default_configuration = 'e26ab2de-93ae-11e6-bf5b-000c290c1bad'
-compare_configurations_r_script = './compare_configurations.R '
+compare_configurations_r_script = './graph_compare_options.R '
 graph_configuration_options_r_script = './graph_configuration_options.R '
 
 
@@ -95,10 +95,12 @@ def graph_configuration_options(configuration, default=None, id_option_tuples=No
         subprocess.call('Rscript ' + graph_configuration_options_r_script + r_arguments, shell=True)
 
 
-def compare_configuration(configuration):
+def compare_configuration(configuration, min, max):
     """
     compare_configuration(configuration)
 
+    :param max:
+    :param min:
     :param configuration:
     """
     mdb.startup(turtlebot_explore_db)
@@ -108,14 +110,12 @@ def compare_configuration(configuration):
     for nfp in nfps_tuple:
         nfps.append(str(nfp[0]))
 
-    configuration_ids_tuples = mdb.exec_sql('select id from configurations where options like "{}%"'.format(configuration))
+    configuration_ids = [str(mdb.exec_sql('select id from configurations where options '
+                                          'like "{} {}"'.format(configuration, min))[0][0]),
+                         str(mdb.exec_sql('select id from configurations where options '
+                                          'like "{} {}"'.format(configuration, max))[0][0])]
+
     mdb.shutdown()
-
-    configuration_ids = []
-
-    for configuration_id in configuration_ids_tuples:
-        configuration_ids.append(str(configuration_id[0]))
-
     files = []
 
     for nfp in nfps:
@@ -155,13 +155,23 @@ def compare_configuration(configuration):
 
 
 def compare_particle_filter_options():
+    """
+    compare_particle_filter_options()
+
+    Graph configurations compare the default values to the minimum and maximum values
+    """
     for configuration in configurations.filter_options:
-        compare_configuration(configuration[0])
+        compare_configuration(configuration[0], configuration[2], configuration[3])
 
 
 def compare_laser_options():
+    """
+    compare_laser_options()
+
+    Graph configurations compare the default values to the minimum and maximum values
+    """
     for configuration in configurations.laser_options:
-        compare_configuration(configuration[0])
+        compare_configuration(configuration[0], configuration[2], configuration[3])
 
 
 def graph_particle_filter_options():
@@ -197,6 +207,3 @@ def graph_particle_filter_options_combine():
         graph_configuration_options(name, id_option_tuples=tuples)
 
     mdb.shutdown()
-
-
-graph_particle_filter_options_combine()
