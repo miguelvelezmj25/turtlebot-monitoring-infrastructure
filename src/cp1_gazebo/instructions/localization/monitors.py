@@ -16,12 +16,6 @@ CPU_MONITOR = 'cpu_monitor'
 AMCL_CPU_MONITOR = 'amcl_cpu_monitor'
 MOVE_BASE_CPU_MONITOR = 'move_base_cpu_monitor'
 
-gazebo_pose_data = []
-amcl_pose_data = []
-cpu_monitor_data = []
-amcl_cpu_monitor_data = []
-move_base_cpu_monitor_data = []
-
 CPU_MONITOR_COMMAND = "mpstat 1 1 | grep -o M..all........ | sed -e 's/M  all   //'"
 AMCL_CPU_MONITOR_COMMAND = "pidstat -t -C amcl 1 1 | grep -o .*-..amcl | sed 's/ *- *amcl//' | grep -o '......$'"
 MOVE_BASE_CPU_MONITOR_COMMAND = "pidstat -t -C move_base 1 1 | grep -o .*-..move_base | sed 's/ *- *move_base//' | grep -o '......$'"
@@ -85,16 +79,21 @@ def particlecloud_proxy_for_amcl_cpu_callback(data, file):
         file.write("time: {} | value: {}\n".format(amcl_cpu_current_time, float(value)))
 
 
-# def close_files():
-#     print "Closing monitor files"
-#
-#     for monitor_files in monitor_files:
-#         monitor_files.close()
-#
-#     print "Done closing monitor files"
-#
-#
-# rospy.on_shutdown(close_files())
+# def cleanup_files():
+#     for monitor_file in monitor_files:
+#         monitor_file.close()
+
+
+def close_files():
+    print "Closing monitor files"
+
+    for monitor_file in monitor_files:
+        monitor_file.close()
+
+    print "Done closing monitor files"
+
+
+rospy.on_shutdown(close_files())
 
 if __name__ == '__main__':
     rospy.init_node('custom_monitors', anonymous=True)
@@ -125,3 +124,5 @@ if __name__ == '__main__':
                      callback_args=monitor_files[AMCL_CPU_MONITOR], queue_size=1)
 
     rospy.spin()
+
+
