@@ -118,8 +118,15 @@ def measure(id, configurations):
 
     measurements[DURATION] = duration
 
-    for monitor_file in monitors.monitor_files:
-        print monitor_file
+    all_monitors_file_name = monitors.DATA_FOLDER + monitors.MONITORS_FILE + '.txt'
+
+    with open(all_monitors_file_name, 'r', 0) as all_monitors_file:
+        for line in all_monitors_file:
+            print line
+
+
+
+
     measurements[GROUND_TRUTH_POSE] = monitors.gazebo_pose_data
     measurements[ESTIMATE_POSE] = monitors.amcl_pose_data
     measurements[CPU_MONITOR] = monitors.cpu_monitor_data
