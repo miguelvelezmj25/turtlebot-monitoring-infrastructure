@@ -84,10 +84,11 @@ def cleanup_files():
     all_monitors_file_name = DATA_FOLDER + MONITORS_FILE + '.txt'
 
     with open(all_monitors_file_name, 'r', 0) as all_monitors_file:
-        data = all_monitors_file.read().splitlines(True)
+        data = all_monitors_file.read().splitlines()
 
     with open(all_monitors_file_name, 'r', 0) as all_monitors_file:
         all_monitors_file.writelines(data[1:])
+        print data
 
 
 if __name__ == '__main__':

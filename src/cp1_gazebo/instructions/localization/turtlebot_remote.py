@@ -121,8 +121,10 @@ def measure(id, configurations):
     monitors.cleanup_files()
     all_monitors_file_name = monitors.DATA_FOLDER + monitors.MONITORS_FILE + '.txt'
     with open(all_monitors_file_name, 'r', 0) as all_monitors_file:
-        for line in all_monitors_file:
-            print line.strip()
+        data = all_monitors_file.read().splitlines(True)
+
+        for line in data:
+            print line
 
 
 
