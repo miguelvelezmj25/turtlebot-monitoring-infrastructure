@@ -10,7 +10,7 @@ gamma = 0
 delta = 0
 QUEUE_CAPACITY = 1000
 
-publisher = rospy.Publisher('/scan_altered', LaserScan, queue_size=queue_capacity)
+publisher = rospy.Publisher('/scan_altered', LaserScan, queue_size=QUEUE_CAPACITY)
 
 
 def scan_callback(data):
