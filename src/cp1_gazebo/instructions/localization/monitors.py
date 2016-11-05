@@ -30,7 +30,6 @@ def gazebo_model_states_callback(data):
     pose = data.pose[2]
     position = pose.position
 
-    global gazebo_pose_data
     gazebo_pose_data.append((gazebo_current_time, position.x, position.y))
 
 
