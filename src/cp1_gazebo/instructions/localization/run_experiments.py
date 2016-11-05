@@ -297,3 +297,6 @@ if __name__ == '__main__':
     finally:
         signal.alarm(0)
         mdb.shutdown()
+
+
+#TODO why is are the different nfps giving me diffirent sizes?

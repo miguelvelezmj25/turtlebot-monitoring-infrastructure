@@ -81,8 +81,13 @@ def particlecloud_proxy_for_amcl_cpu_callback(data, file):
 
 
 def cleanup_files():
-    for monitor_file in monitor_files:
-        monitor_file.close()
+    all_monitors_file_name = DATA_FOLDER + MONITORS_FILE + '.txt'
+
+    with open(all_monitors_file_name, 'r', 0) as all_monitors_file:
+        data = all_monitors_file.read().splitlines(True)
+
+    with open(all_monitors_file_name, 'r', 0) as all_monitors_file:
+        all_monitors_file.writelines(data[1:])
 
 
 if __name__ == '__main__':
