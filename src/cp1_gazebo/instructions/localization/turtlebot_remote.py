@@ -122,6 +122,7 @@ def measure(id, configurations):
     measurements[CPU_MONITOR] = monitors.cpu_monitor_data
     measurements[AMCL_CPU_MONITOR] = monitors.amcl_cpu_monitor_data
     measurements[MOVE_BASE_CPU_MONITOR] = monitors.move_base_cpu_monitor_data
+    print measurements
 
     shutil.rmtree('data/' + str(id))
 
