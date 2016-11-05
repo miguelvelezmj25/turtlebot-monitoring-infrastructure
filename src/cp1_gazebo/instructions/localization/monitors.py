@@ -79,21 +79,21 @@ def particlecloud_proxy_for_amcl_cpu_callback(data, file):
         file.write("time: {} | value: {}\n".format(amcl_cpu_current_time, float(value)))
 
 
-# def cleanup_files():
-#     for monitor_file in monitor_files:
-#         monitor_file.close()
-
-
-def close_files():
-    print "Closing monitor files"
-
+def cleanup_files():
     for monitor_file in monitor_files:
         monitor_file.close()
 
-    print "Done closing monitor files"
 
-
-rospy.on_shutdown(close_files())
+# def close_files():
+#     print "Closing monitor files"
+#
+#     for monitor_file in monitor_files:
+#         monitor_file.close()
+#
+#     print "Done closing monitor files"
+#
+#
+# rospy.on_shutdown(close_files())
 
 if __name__ == '__main__':
     rospy.init_node('custom_monitors', anonymous=True)
