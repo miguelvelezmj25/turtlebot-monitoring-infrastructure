@@ -88,10 +88,10 @@ def cleanup_files():
 
         for data_file_name in data:
             with open(DATA_FOLDER + data_file_name, 'r', 0) as data_file:
-                data = all_monitors_file.read().splitlines()
+                data = data_file.read().splitlines()
 
             with open(DATA_FOLDER + data_file_name, 'w', 0) as data_file:
-                all_monitors_file.writelines(data[1:])
+                data_file.writelines(data[1:])
                 print data
 
 
