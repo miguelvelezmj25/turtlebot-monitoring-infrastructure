@@ -15,41 +15,59 @@ from geometry_msgs.msg import PoseArray
 from gazebo_msgs.msg import ModelStates
 from rosgraph_msgs.msg import Clock
 
-gazebo_pose_data = []
-amcl_pose_data = []
-cpu_monitor_data = []
-amcl_cpu_monitor_data = []
-move_base_cpu_monitor_data = []
-gazebo_log_error = None
-turtlebot_log_error = None
-
 config_parser = ConfigParser.RawConfigParser()
 config_file_path = r'.serverconfig'
 config_parser.read(config_file_path)
 remote_host = config_parser.get(socket.gethostname(), 'simulator')
 remote_password = config_parser.get(socket.gethostname(), 'password')
 
+gazebo_pose_data = []
+amcl_pose_data = []
+cpu_monitor_data = []
+amcl_cpu_monitor_data = []
+move_base_cpu_monitor_data = []
+data_files = {}
+
+GAZEBO_LOG_ERROR = None
+TURTLEBOT_LOG_ERROR = None
+
+SUCCESS = 'success'
+FAIL = 'fail'
+RESULT = 'result'
+NODE_NAME = 'turtlebot_remote'
+NAVIGATION = 'map_navigation'
+MONITOR_SCAN = 'monitor_scan'
+DURATION = 'duration'
+GROUND_TRUTH_POSE = 'ground_truth_pose'
+ESTIMATE_POSE = 'estimate_pose'
+CPU_MONITOR = 'cpu_monitor'
+AMCL_CPU_MONITOR = 'amcl_cpu_monitor'
+MOVE_BASE_CPU_MONITOR = 'move_base_cpu_monitor'
+CPU_MONITOR_COMMAND = "mpstat 1 1 | grep -o M..all........ | sed -e 's/M  all   //'"
+AMCL_CPU_MONITOR_COMMAND = "pidstat -t -C amcl 1 1 | grep -o .*-..amcl | sed 's/ *- *amcl//' | grep -o '......$'"
+MOVE_BASE_CPU_MONITOR_COMMAND = "pidstat -t -C move_base 1 1 | grep -o .*-..move_base | sed 's/ *- *move_base//' | grep -o '......$'"
+
 
 def startup(environment_configurations):
     print "Startup"
 
-    global gazebo_log_error
-    gazebo_log_error = open('log/gazebo_remote.log', 'a+', 0)
+    global GAZEBO_LOG_ERROR
+    GAZEBO_LOG_ERROR = open('log/gazebo_remote.log', 'a+', 0)
     subprocess.Popen("./start_remote_gazebo.sh " + str(remote_host) + ' ' + str(remote_password), shell=True,
-                     stderr=gazebo_log_error, stdout=gazebo_log_error)
+                     stderr=GAZEBO_LOG_ERROR, stdout=GAZEBO_LOG_ERROR)
     time.sleep(10)
 
-    global turtlebot_log_error
-    turtlebot_log_error = open('log/turtlebot_remote.log', 'a+', 0)
-    subprocess.Popen("roslaunch cp1_gazebo robot-altered.launch", shell=True, stderr=turtlebot_log_error,
-                     stdout=turtlebot_log_error)
+    global TURTLEBOT_LOG_ERROR
+    TURTLEBOT_LOG_ERROR = open('log/turtlebot_remote.log', 'a+', 0)
+    subprocess.Popen("roslaunch cp1_gazebo robot-altered.launch", shell=True, stderr=TURTLEBOT_LOG_ERROR,
+                     stdout=TURTLEBOT_LOG_ERROR)
     time.sleep(5)
 
-    subprocess.Popen("rosrun cp1_gazebo " + monitor_scan + '.py "' + str(environment_configurations) + '"', shell=True,
-                     stderr=turtlebot_log_error, stdout=turtlebot_log_error)
+    subprocess.Popen("rosrun cp1_gazebo " + MONITOR_SCAN + '.py "' + str(environment_configurations) + '"', shell=True,
+                     stderr=TURTLEBOT_LOG_ERROR, stdout=TURTLEBOT_LOG_ERROR)
     time.sleep(10)
 
-    rospy.init_node(node_name, anonymous=True)
+    rospy.init_node(NODE_NAME, anonymous=True)
     global gazebo_current_time
     gazebo_current_time = 0
     global amcl_current_time
@@ -58,13 +76,13 @@ def startup(environment_configurations):
     cpu_current_time = 0
     global amcl_cpu_current_time
     amcl_cpu_current_time = 0
-    rospy.Subscriber("/gazebo/model_states", ModelStates, gazebo_callback, queue_size=1)
+    rospy.Subscriber("/gazebo/model_states", ModelStates, gazebo_model_states_callback, queue_size=1)
     rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, amcl_pose_callback, queue_size=1)
-    rospy.Subscriber("/clock", Clock, cpu_callback, queue_size=1)
-    rospy.Subscriber("/particlecloud", PoseArray, amcl_callback, queue_size=1)
+    rospy.Subscriber("/clock", Clock, clock_proxy_for_cpu_callback, queue_size=1)
+    rospy.Subscriber("/particlecloud", PoseArray, particlecloud_proxy_for_amcl_cpu_callback, queue_size=1)
 
 
-def gazebo_callback(data):
+def gazebo_model_states_callback(data):
     data_time = rospy.get_rostime().secs
 
     global gazebo_current_time
@@ -94,7 +112,7 @@ def amcl_pose_callback(data):
     amcl_pose_data.append((amcl_current_time, position.x, position.y))
 
 
-def cpu_callback(data):
+def clock_proxy_for_cpu_callback(data):
     data_time = rospy.get_rostime().secs
 
     global cpu_current_time
@@ -103,14 +121,14 @@ def cpu_callback(data):
 
     cpu_current_time = data_time
 
-    value = commands.getstatusoutput(cpu_monitor_command)[1]
+    value = commands.getstatusoutput(CPU_MONITOR_COMMAND)[1]
 
     if len(value) > 0:
         global cpu_monitor_data
         cpu_monitor_data.append((cpu_current_time, float(value)))
 
 
-def amcl_callback(data):
+def particlecloud_proxy_for_amcl_cpu_callback(data):
     data_time = rospy.get_rostime().secs
 
     global amcl_cpu_current_time
@@ -119,7 +137,7 @@ def amcl_callback(data):
 
     amcl_cpu_current_time = data_time
 
-    value = commands.getstatusoutput(amcl_cpu_monitor_command)[1]
+    value = commands.getstatusoutput(AMCL_CPU_MONITOR_COMMAND)[1]
 
     if len(value) > 0:
         global amcl_cpu_monitor_data
@@ -134,16 +152,17 @@ def shutdown():
 
     if not os.path.exists('log/'):
         os.mkdir('log/')
-    global gazebo_log_error
-    gazebo_log_error = open('log/gazebo_remote.log', 'a+', 0)
+    global GAZEBO_LOG_ERROR
+    GAZEBO_LOG_ERROR = open('log/gazebo_remote.log', 'a+', 0)
 
-    subprocess.Popen("./stop_remote_roslaunch.sh " + str(remote_host) + ' ' + str(remote_password), shell=True, stdout=gazebo_log_error, stderr=gazebo_log_error)
+    subprocess.Popen("./stop_remote_roslaunch.sh " + str(remote_host) + ' ' + str(remote_password), shell=True,
+                     stdout=GAZEBO_LOG_ERROR, stderr=GAZEBO_LOG_ERROR)
     time.sleep(20)
 
-    gazebo_log_error.close()
+    GAZEBO_LOG_ERROR.close()
 
-    if turtlebot_log_error is not None:
-        turtlebot_log_error.close()
+    if TURTLEBOT_LOG_ERROR is not None:
+        TURTLEBOT_LOG_ERROR.close()
 
 
 def restart(environment_configurations):
@@ -158,15 +177,15 @@ def measure(id, configurations):
     if os.path.exists('data/' + str(id)):
         shutil.rmtree('data/' + str(id))
     os.makedirs('data/' + str(id))
-    data_files[navigation] = open('data/' + str(id) + "/" + navigation + '.txt', 'a+', 0)
-    subprocess.call("python " + navigation + '.py "' + str(configurations) + '"', shell=True,
-                    stdout=data_files[navigation])
+    data_files[NAVIGATION] = open('data/' + str(id) + "/" + NAVIGATION + '.txt', 'a+', 0)
+    subprocess.call("python " + NAVIGATION + '.py "' + str(configurations) + '"', shell=True,
+                    stdout=data_files[NAVIGATION])
 
     time.sleep(2)
     time_regex = '(?<=time: )[0-9]+.[0-9]+'
     fail_regex = 'fail'
 
-    with open(data_files[navigation].name, 'r', 0) as content_file:
+    with open(data_files[NAVIGATION].name, 'r', 0) as content_file:
         content = content_file.read()
 
     duration = re.search(time_regex, content)
@@ -175,29 +194,19 @@ def measure(id, configurations):
     measurements = {}
     if fail is not None:
         duration = None
-        measurements['result'] = 'fail'
+        measurements[RESULT] = FAIL
 
     else:
         duration = duration.group(0)
-        measurements['result'] = 'success'
+        measurements[RESULT] = SUCCESS
 
-    measurements['duration'] = duration
-    measurements['ground_truth_pose'] = gazebo_pose_data
-    measurements['estimate_pose'] = amcl_pose_data
-    measurements['cpu_monitor'] = cpu_monitor_data
-    measurements['amcl_monitor'] = amcl_cpu_monitor_data
-    measurements['move_base_monitor'] = move_base_cpu_monitor_data
+    measurements[DURATION] = duration
+    measurements[GROUND_TRUTH_POSE] = gazebo_pose_data
+    measurements[ESTIMATE_POSE] = amcl_pose_data
+    measurements[CPU_MONITOR] = cpu_monitor_data
+    measurements[AMCL_CPU_MONITOR] = amcl_cpu_monitor_data
+    measurements[MOVE_BASE_CPU_MONITOR] = move_base_cpu_monitor_data
 
     shutil.rmtree('data/' + str(id))
 
     return measurements
-
-
-data_files = {}
-node_name = 'turtlebot_remote'
-navigation = 'map_navigation'
-monitor_scan = 'monitor_scan'
-cpu_monitor_command = "mpstat 1 1 | grep -o M..all........ | sed -e 's/M  all   //'"
-amcl_cpu_monitor_command = "pidstat -t -C amcl 1 1 | grep -o .*-..amcl | sed 's/ *- *amcl//' | grep -o '......$'"
-move_base_cpu_monitor_command = "pidstat -t -C move_base 1 1 | grep -o .*-..move_base | sed 's/ *- *move_base//' | grep -o '......$'"
-

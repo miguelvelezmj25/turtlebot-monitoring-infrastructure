@@ -7,13 +7,13 @@ import math
 import socket
 import jetway.mdb as mdb
 
+config_parser = ConfigParser.RawConfigParser()
+config_file_path = r'.serverconfig'
+config_parser.read(config_file_path)
+remote_host = config_parser.get(socket.gethostname(), 'simulator')
+
 max_run_time = 100
 max_experiment_time = 300
-ground_truth_pose = 'ground_truth_pose'
-estimate_pose = 'estimate_pose'
-cpu_monitor = 'cpu_monitor'
-amcl_monitor = 'amcl_monitor'
-move_base_monitor = 'move_base_monitor'
 navigation_configuration = {'target_x': 7, 'target_y': -10.5}
 environment_configurations = ['laser_miscalibration', 'laser_noise', 'odometry_miscalibration', 'odometry_noise']
 
@@ -22,17 +22,17 @@ def signal_handler(signum, frame):
     raise SystemError("Time out")
 
 
-def get_cpu_utilization(id, time_range, nfp, utilization_data):
+def get_cpu_utilization(id, nfp, utilization_data, time_range):
     """
 
-    :param id:
     :param time_range:
+    :param id:`
     :param nfp:
     :param utilization_data:
     :return:
     """
     cpu_data = utilization_data[:]
-    filter_cpu(cpu_data)
+    filter_data(cpu_data)
 
     start_item = [item for item in cpu_data if item[0] == time_range[0]][0]
     end_item = [item for item in cpu_data if item[0] == time_range[1]][0]
@@ -41,9 +41,9 @@ def get_cpu_utilization(id, time_range, nfp, utilization_data):
     nfp_id = mdb.get_nfp_id(nfp)
 
     for i in range(0, len(cpu_data)):
-        mdb.insert('measurements_verbose', 'configuration_id, simulator, host, nfp_id, value, time', '"' + id + '", "'
-                   + remote_host + '", "' + socket.gethostname() + '", ' + str(nfp_id) + ", " + str(cpu_data[i][1])
-                   + ", " + str(cpu_data[i][0]))
+        mdb.insert('measurements_verbose', 'configuration_id, simulator, host, nfp_id, value, time',
+                   '"{}", "{}", "{}", {}, {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id,
+                                                         cpu_data[i][1], cpu_data[i][0]))
 
     mean = 0
 
@@ -52,8 +52,8 @@ def get_cpu_utilization(id, time_range, nfp, utilization_data):
 
     mean /= len(cpu_data)
 
-    mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value', '"' + id + '", "' + remote_host + '", "'
-               + socket.gethostname() + '", ' + str(nfp_id) + ", " + str(mean))
+    mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value',
+               '"{}", "{}", "{}", {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id, mean))
 
 
 def get_localization_uncertainty(id, duration, result, ground_truth_data, estimate_monitor_data):
@@ -75,23 +75,23 @@ def get_localization_uncertainty(id, duration, result, ground_truth_data, estima
     # Trim the ground data to have the same number of data points for both arrays
     ground_data = ground_data[0:len(estimate_data)]
 
-    if result == 'success':
-        ground_data = ground_data[:int(float(duration)) + 1]
-        estimate_data = estimate_data[:int(float(duration)) + 1]
-
     uncertainty = []
-    time_range = (ground_data[0][0], ground_data[-1][0])
     nfp_id = mdb.get_nfp_id('mean_localization_error')
 
     for i in range(0, len(ground_data)):
         calculation = math.sqrt(math.pow(ground_data[i][1] - estimate_data[i][1], 2)
                                 + math.pow(ground_data[i][2] - estimate_data[i][2], 2))
-        mdb.insert('measurements_verbose', 'configuration_id, simulator, host, nfp_id, value, time', '"' + id + '", "'
-                   + remote_host + '", "' + socket.gethostname() + '", ' + str(nfp_id) + ", " + str(calculation) + ", "
-                   + str(estimate_data[i][0]))
+
+        try:
+            mdb.insert('measurements_verbose', 'configuration_id, simulator, host, nfp_id, value, time',
+                       '"{}", "{}", "{}", {}, {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id,
+                                                             calculation, estimate_data[i][0]))
+        except mdb.connector.Error as error:
+            print "Error when inserting data: {}".format(error)
+
         uncertainty.append((estimate_data[i][0], calculation))
 
-    # The ground truth recorded less values than the estimate
+    # Both arrays have the same number of values
     if len(estimate_data) == len(ground_data):
         mean = 0
 
@@ -100,81 +100,71 @@ def get_localization_uncertainty(id, duration, result, ground_truth_data, estima
 
         mean /= len(uncertainty)
 
-        mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value', '"' + id + '", "' + remote_host + '", "'
-                   + socket.gethostname() + '", ' + str(nfp_id) + ", " + str(mean))
-
+        try:
+            mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value',
+                       '"{}", "{}", "{}", {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id, mean))
+        except mdb.connector.Error as error:
+            print "Error when inserting data: {}".format(error)
     else:
-        mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id', '"' + id + '", "' + remote_host + '", "'
-                   + socket.gethostname() + '", ' + str(nfp_id))
+        try:
+            mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id',
+                       '"{}", "{}", "{}", {}'.format(id, remote_host, socket.gethostname(), nfp_id))
+        except mdb.connector.Error as error:
+            print "Error when inserting data: {}".format(error)
 
-    if result != 'success':
+    if result == turtlebot_remote.FAIL:
         duration = max_run_time
 
     nfp_id = mdb.get_nfp_id('time')
-    mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value', '"' + id + '", "' + remote_host + '", "'
-               + socket.gethostname() + '", ' + str(nfp_id) + ", " + str(duration))
-
-    return time_range
+    mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value',
+               '"{}", "{}", "{}", {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id, duration))
 
 
-def filter_cpu(data):
-    current_time = data[0][0] - 1
-    filtered_data = []
-
-    i = 0
-
-    while i < len(data):
-        element = data[i]
-
-        if element[0] > current_time + 1:
-            current_time += 1
-
-            if len(filtered_data) == 0:
-                filtered_data.append((current_time, (element[1] + data[i-1][1])/2))
-            else:
-                filtered_data.append((current_time, (element[1] + filtered_data[-1][1])/2))
-
-            i -= 1
-        elif current_time < element[0]:
-            current_time = element[0]
-            filtered_data.append((current_time, element[1]))
-
-        i += 1
-
-    del data[:]
-    data.extend(filtered_data)
-
-
-def filter_data(data, current_time=-1):
+def filter_data(data, start_time=-1):
     """
 
     :param data:
-    :param current_time:
+    :param start_time:
     :return:
     """
-    if current_time == -1:
-        current_time = data[0][0]
+    if start_time == -1:
+        start_time = data[0][0]
 
-    current_time -= 1
+    current_time = start_time - 1
     filtered_data = []
 
     i = 0
 
     while i < len(data):
         element = data[i]
+        entry = []
 
-        if element[0] > current_time + 1:
+        if element[0] > (current_time + 1):
             current_time += 1
+            entry.append(current_time)
+            j = 1
 
             if len(filtered_data) == 0:
-                filtered_data.append((current_time, (element[1] + data[i-1][1])/2, (element[2] + data[i-1][2])/2))
+                while j < len(element):
+                    entry.append((element[j] + data[0][j])/2.0)
+                    j += 1
             else:
-                filtered_data.append((current_time, (element[1] + filtered_data[-1][1])/2,
-                                      (element[2] + filtered_data[-1][2])/2))
+                while j < len(element):
+                    entry.append((element[j] + filtered_data[-1][j])/2.0)
+                    j += 1
+
             i -= 1
-        elif current_time < element[0]:
+        elif element[0] > current_time:
             current_time = element[0]
-            filtered_data.append((current_time, element[1], element[2]))
+            entry.append(current_time)
+            j = 1
+
+            while j < len(element):
+                entry.append(element[j])
+                j += 1
+        # TODO should we check if the current element has the same time as the current time?
+
+        filtered_data.append(tuple(entry))
 
         i += 1
 
@@ -198,13 +188,13 @@ def run(id, configurations):
         measurements = turtlebot_remote.measure(id, configurations)
     except SystemError, e:
         duration = max_run_time
-        measurements['duration'] = duration
-        measurements['ground_truth_pose'] = turtlebot_remote.gazebo_pose_data
-        measurements['estimate_pose'] = turtlebot_remote.amcl_pose_data
-        measurements['result'] = 'fail'
-        measurements['cpu_monitor'] = turtlebot_remote.cpu_monitor_data
-        measurements['amcl_monitor'] = turtlebot_remote.amcl_cpu_monitor_data
-        measurements['move_base_monitor'] = turtlebot_remote.move_base_cpu_monitor_data
+        measurements[turtlebot_remote.DURATION] = duration
+        measurements[turtlebot_remote.GROUND_TRUTH_POSE] = turtlebot_remote.gazebo_pose_data
+        measurements[turtlebot_remote.ESTIMATE_POSE] = turtlebot_remote.amcl_pose_data
+        measurements[turtlebot_remote.RESULT] = turtlebot_remote.FAIL
+        measurements[turtlebot_remote.CPU_MONITOR] = turtlebot_remote.cpu_monitor_data
+        measurements[turtlebot_remote.AMCL_CPU_MONITOR] = turtlebot_remote.amcl_cpu_monitor_data
+        measurements[turtlebot_remote.MOVE_BASE_CPU_MONITOR] = turtlebot_remote.move_base_cpu_monitor_data
     finally:
         signal.alarm(0)
 
@@ -265,33 +255,21 @@ def measure(id, environment_configurations, amcl_configurations):
     :return:
     """
     settings = {'navigation': navigation_configuration, 'environment': environment_configurations,
-                'amcl': amcl_configurations
-                }
+                'amcl': amcl_configurations}
 
     measurements = run(id, settings)
 
     # Trim the first entry since amcl does not start publishing until the robot start moving
-    try:
-        time_range = get_localization_uncertainty(id, measurements['duration'], measurements['result'],
-                                                  measurements[ground_truth_pose], measurements[estimate_pose][1:])
-    except:
-        print 'Error when processing localization uncertainty'
-        time_range = [measurements[cpu_monitor][0][0], measurements[cpu_monitor][-1][0]]
-        print 'Attempting to continue with time_range = {}'.format(time_range)
+    get_localization_uncertainty(id, measurements[turtlebot_remote.DURATION], measurements[turtlebot_remote.RESULT],
+                                 measurements[turtlebot_remote.GROUND_TRUTH_POSE],
+                                 measurements[turtlebot_remote.turtlebot_remote.ESTIMATE_POSE][1:])
 
-    try:
-        get_cpu_utilization(id, time_range, 'mean_cpu_utilization', measurements[cpu_monitor][1:])
-    except:
-        print 'Error when processing mean cpu utilization'
+    time_range = (measurements[turtlebot_remote.turtlebot_remote.ESTIMATE_POSE][1][0],
+                  measurements[turtlebot_remote.turtlebot_remote.ESTIMATE_POSE][-1][0])
 
-        if time_range is None:
-            time_range = [measurements[amcl_monitor][0][0], measurements[amcl_monitor][-1][0]]
-            print 'Attempting to continue with time_range = {}'.format(time_range)
-
-    try:
-        get_cpu_utilization(id, time_range, 'mean_amcl_cpu_utilization', measurements[amcl_monitor][1:])
-    except:
-        print 'Error when processing mean amcl cpu utilization'
+    # These nfps should match the db
+    get_cpu_utilization(id, 'mean_cpu_utilization', measurements[turtlebot_remote.CPU_MONITOR], time_range)
+    get_cpu_utilization(id, 'mean_amcl_cpu_utilization', measurements[turtlebot_remote.AMCL_CPU_MONITOR], time_range)
 
 
 signal.signal(signal.SIGALRM, signal_handler)
@@ -299,11 +277,6 @@ signal.signal(signal.SIGALRM, signal_handler)
 if __name__ == '__main__':
     try:
         signal.alarm(max_experiment_time)
-
-        config_parser = ConfigParser.RawConfigParser()
-        config_file_path = r'.serverconfig'
-        config_parser.read(config_file_path)
-        remote_host = config_parser.get(socket.gethostname(), 'simulator')
 
         mdb.startup('turtlebot-explore')
         id = mdb.get_next_todo('worker', '"' + str(socket.gethostname()) + '"')
