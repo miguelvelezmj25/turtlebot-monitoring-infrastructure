@@ -2,11 +2,19 @@
 
 import commands
 import rospy
+import os
 
 from geometry_msgs.msg import PoseWithCovarianceStamped
 from geometry_msgs.msg import PoseArray
 from gazebo_msgs.msg import ModelStates
 from rosgraph_msgs.msg import Clock
+
+DATA_FOLDER = 'monitor_data/'
+GROUND_TRUTH_POSE = 'ground_truth_pose'
+ESTIMATE_POSE = 'estimate_pose'
+CPU_MONITOR = 'cpu_monitor'
+AMCL_CPU_MONITOR = 'amcl_cpu_monitor'
+MOVE_BASE_CPU_MONITOR = 'move_base_cpu_monitor'
 
 gazebo_pose_data = []
 amcl_pose_data = []
@@ -19,7 +27,9 @@ AMCL_CPU_MONITOR_COMMAND = "pidstat -t -C amcl 1 1 | grep -o .*-..amcl | sed 's/
 MOVE_BASE_CPU_MONITOR_COMMAND = "pidstat -t -C move_base 1 1 | grep -o .*-..move_base | sed 's/ *- *move_base//' | grep -o '......$'"
 
 
-def gazebo_model_states_callback(data):
+def gazebo_model_states_callback(data, arguments):
+    print data
+    print arguments
     data_time = rospy.get_rostime().secs
 
     global gazebo_current_time
@@ -31,7 +41,6 @@ def gazebo_model_states_callback(data):
     position = pose.position
 
     gazebo_pose_data.append((gazebo_current_time, position.x, position.y))
-    print gazebo_pose_data
 
 
 def amcl_pose_callback(data):
@@ -45,7 +54,6 @@ def amcl_pose_callback(data):
     pose = data.pose.pose
     position = pose.position
 
-    global amcl_pose_data
     amcl_pose_data.append((amcl_current_time, position.x, position.y))
 
 
@@ -61,7 +69,6 @@ def clock_proxy_for_cpu_callback(data):
     value = commands.getstatusoutput(CPU_MONITOR_COMMAND)[1]
 
     if len(value) > 0:
-        global cpu_monitor_data
         cpu_monitor_data.append((cpu_current_time, float(value)))
 
 
@@ -77,27 +84,46 @@ def particlecloud_proxy_for_amcl_cpu_callback(data):
     value = commands.getstatusoutput(AMCL_CPU_MONITOR_COMMAND)[1]
 
     if len(value) > 0:
-        global amcl_cpu_monitor_data
         amcl_cpu_monitor_data.append((amcl_cpu_current_time, float(value)))
 
+
+def close_files():
+    print "Closing monitor files"
+
+    for monitor_files in monitor_files:
+        monitor_files.close()
+
+    print "Done closing monitor files"
+
+
+rospy.on_shutdown(close_files())
 
 if __name__ == '__main__':
     rospy.init_node('custom_monitors', anonymous=True)
 
-    global gazebo_current_time
+    if not os.path.exists(DATA_FOLDER):
+        os.mkdir(DATA_FOLDER)
+
+    monitor_files = {}
+
     gazebo_current_time = 0
-    rospy.Subscriber("/gazebo/model_states", ModelStates, gazebo_model_states_callback, queue_size=1)
+    monitor_files[GROUND_TRUTH_POSE] = open(DATA_FOLDER + GROUND_TRUTH_POSE + '.txt', "w", 0)
+    rospy.Subscriber("/gazebo/model_states", ModelStates, callback=gazebo_model_states_callback,
+                     callback_args=monitor_files[GROUND_TRUTH_POSE], queue_size=1)
 
-    global amcl_current_time
     amcl_current_time = 0
-    rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, amcl_pose_callback, queue_size=1)
+    monitor_files[ESTIMATE_POSE] = open(DATA_FOLDER + ESTIMATE_POSE + '.txt', "w", 0)
+    rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, callback=amcl_pose_callback,
+                     callback_args=monitor_files[ESTIMATE_POSE], queue_size=1)
 
-    global cpu_current_time
     cpu_current_time = 0
-    rospy.Subscriber("/clock", Clock, clock_proxy_for_cpu_callback, queue_size=1)
+    monitor_files[CPU_MONITOR] = open(DATA_FOLDER + CPU_MONITOR + '.txt', "w", 0)
+    rospy.Subscriber("/clock", Clock, callback=clock_proxy_for_cpu_callback,
+                     callback_args=monitor_files[CPU_MONITOR], queue_size=1)
 
-    global amcl_cpu_current_time
     amcl_cpu_current_time = 0
-    rospy.Subscriber("/particlecloud", PoseArray, particlecloud_proxy_for_amcl_cpu_callback, queue_size=1)
+    monitor_files[AMCL_CPU_MONITOR] = open(DATA_FOLDER + AMCL_CPU_MONITOR + '.txt', "w", 0)
+    rospy.Subscriber("/particlecloud", PoseArray, callback=particlecloud_proxy_for_amcl_cpu_callback,
+                     callback_args=monitor_files[AMCL_CPU_MONITOR], queue_size=1)
 
     rospy.spin()

@@ -55,7 +55,7 @@ def startup(environment_configurations):
     time.sleep(10)
 
     # rospy.init_node(NODE_NAME, anonymous=True)
-    subprocess.Popen("rosrun cp1_gazebo " + MONITORS_FILE, shell=True)#, stderr=turtlebot_log_error,
+    subprocess.Popen("python " + MONITORS_FILE, shell=True)#, stderr=turtlebot_log_error,
                      # stdout=turtlebot_log_error)
     time.sleep(5)
 
