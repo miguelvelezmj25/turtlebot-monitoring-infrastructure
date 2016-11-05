@@ -185,6 +185,17 @@ def graph_particle_filter_options():
         graph_configuration_options(option, default)
 
 
+def graph_laser_options():
+    """
+    graph_laser_options()
+
+    Graph all options of all the configurations in the laser that are worth exploring
+    """
+    for option in configurations.laser_options_to_explore:
+        default = [item for item in configurations.laser_options if item[0] == option][0][1]
+        graph_configuration_options(option, default)
+
+
 def graph_particle_filter_options_combine():
     """
     graph_particle_filter_options_combine()
@@ -207,3 +218,4 @@ def graph_particle_filter_options_combine():
         graph_configuration_options(name, id_option_tuples=tuples)
 
     mdb.shutdown()
+
