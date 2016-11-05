@@ -10,6 +10,7 @@ servers = ['feature3.andrew.cmu.edu', 'feature6.andrew.cmu.edu', 'feature8.andre
 # The beam model uses all 4: z_hit, z_short, z_max, and z_rand.
 # The likelihood_field model uses only 2: z_hit and z_rand.
 
+
 def add_default_configuration(db):
     mdb.startup(db)
 

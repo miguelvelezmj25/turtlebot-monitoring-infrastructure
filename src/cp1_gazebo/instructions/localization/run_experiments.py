@@ -12,8 +12,8 @@ config_file_path = r'.serverconfig'
 config_parser.read(config_file_path)
 remote_host = config_parser.get(socket.gethostname(), 'simulator')
 
-max_run_time = 100
-max_experiment_time = 300
+MAX_RUN_TIME = 100
+MAX_EXPERIMENT_TIME = 300
 navigation_configuration = {'target_x': 7, 'target_y': -10.5}
 environment_configurations = ['laser_miscalibration', 'laser_noise', 'odometry_miscalibration', 'odometry_noise']
 
@@ -78,6 +78,9 @@ def get_localization_uncertainty(id, duration, result, ground_truth_data, estima
     uncertainty = []
     nfp_id = mdb.get_nfp_id('mean_localization_error')
 
+    print ground_data
+    print estimate_data
+
     for i in range(0, len(ground_data)):
         calculation = math.sqrt(math.pow(ground_data[i][1] - estimate_data[i][1], 2)
                                 + math.pow(ground_data[i][2] - estimate_data[i][2], 2))
@@ -113,7 +116,7 @@ def get_localization_uncertainty(id, duration, result, ground_truth_data, estima
             print "Error when inserting data: {}".format(error)
 
     if result == turtlebot_remote.FAIL:
-        duration = max_run_time
+        duration = MAX_RUN_TIME
 
     nfp_id = mdb.get_nfp_id('time')
     mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value',
@@ -183,11 +186,11 @@ def run(id, configurations):
 
     measurements = {}
     try:
-        signal.alarm(max_run_time)
+        signal.alarm(MAX_RUN_TIME)
 
         measurements = turtlebot_remote.measure(id, configurations)
     except SystemError as error:
-        duration = max_run_time
+        duration = MAX_RUN_TIME
         measurements[turtlebot_remote.DURATION] = duration
         measurements[turtlebot_remote.GROUND_TRUTH_POSE] = turtlebot_remote.gazebo_pose_data
         measurements[turtlebot_remote.ESTIMATE_POSE] = turtlebot_remote.amcl_pose_data
@@ -276,7 +279,7 @@ signal.signal(signal.SIGALRM, signal_handler)
 
 if __name__ == '__main__':
     try:
-        signal.alarm(max_experiment_time)
+        signal.alarm(MAX_EXPERIMENT_TIME)
 
         mdb.startup('turtlebot-explore')
         id = mdb.get_next_todo('worker', '"' + str(socket.gethostname()) + '"')
