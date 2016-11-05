@@ -38,7 +38,7 @@ def gazebo_model_states_callback(data, file):
     pose = data.pose[2]
     position = pose.position
 
-    file.write("time: {} | x: {} | y: {}".format(gazebo_current_time, position.x, position.y))
+    file.write("time: {} | x: {} | y: {}\n".format(gazebo_current_time, position.x, position.y))
 
 
 def amcl_pose_callback(data, file):
@@ -52,7 +52,7 @@ def amcl_pose_callback(data, file):
     pose = data.pose.pose
     position = pose.position
 
-    file.write("time: {} | x: {} | y: {}".format(amcl_current_time, position.x, position.y))
+    file.write("time: {} | x: {} | y: {}\n".format(amcl_current_time, position.x, position.y))
 
 
 def clock_proxy_for_cpu_callback(data, file):
@@ -67,7 +67,7 @@ def clock_proxy_for_cpu_callback(data, file):
     value = commands.getstatusoutput(CPU_MONITOR_COMMAND)[1]
 
     if len(value) > 0:
-        file.write("time: {} | value: {}".format(cpu_current_time, float(value)))
+        file.write("time: {} | value: {}\n".format(cpu_current_time, float(value)))
 
 
 def particlecloud_proxy_for_amcl_cpu_callback(data, file):
@@ -82,7 +82,7 @@ def particlecloud_proxy_for_amcl_cpu_callback(data, file):
     value = commands.getstatusoutput(AMCL_CPU_MONITOR_COMMAND)[1]
 
     if len(value) > 0:
-        file.write("time: {} | value: {}".format(amcl_cpu_current_time, float(value)))
+        file.write("time: {} | value: {}\n".format(amcl_cpu_current_time, float(value)))
 
 
 # def close_files():
