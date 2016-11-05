@@ -186,7 +186,7 @@ def run(id, configurations):
         signal.alarm(max_run_time)
 
         measurements = turtlebot_remote.measure(id, configurations)
-    except SystemError, e:
+    except SystemError as error:
         duration = max_run_time
         measurements[turtlebot_remote.DURATION] = duration
         measurements[turtlebot_remote.GROUND_TRUTH_POSE] = turtlebot_remote.gazebo_pose_data
@@ -262,10 +262,10 @@ def measure(id, environment_configurations, amcl_configurations):
     # Trim the first entry since amcl does not start publishing until the robot start moving
     get_localization_uncertainty(id, measurements[turtlebot_remote.DURATION], measurements[turtlebot_remote.RESULT],
                                  measurements[turtlebot_remote.GROUND_TRUTH_POSE],
-                                 measurements[turtlebot_remote.turtlebot_remote.ESTIMATE_POSE][1:])
+                                 measurements[turtlebot_remote.ESTIMATE_POSE][1:])
 
-    time_range = (measurements[turtlebot_remote.turtlebot_remote.ESTIMATE_POSE][1][0],
-                  measurements[turtlebot_remote.turtlebot_remote.ESTIMATE_POSE][-1][0])
+    time_range = (measurements[turtlebot_remote.ESTIMATE_POSE][1][0],
+                  measurements[turtlebot_remote.ESTIMATE_POSE][-1][0])
 
     # These nfps should match the db
     get_cpu_utilization(id, 'mean_cpu_utilization', measurements[turtlebot_remote.CPU_MONITOR], time_range)
