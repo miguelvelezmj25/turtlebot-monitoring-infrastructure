@@ -28,8 +28,6 @@ MOVE_BASE_CPU_MONITOR_COMMAND = "pidstat -t -C move_base 1 1 | grep -o .*-..move
 
 
 def gazebo_model_states_callback(data, file):
-    # print data
-    print file
     data_time = rospy.get_rostime().secs
 
     global gazebo_current_time
@@ -40,7 +38,7 @@ def gazebo_model_states_callback(data, file):
     pose = data.pose[2]
     position = pose.position
 
-    gazebo_pose_data.append((gazebo_current_time, position.x, position.y))
+    file.write("time: {} | x: {} | y: {}".format(gazebo_current_time, position.x, position.y))
 
 
 def amcl_pose_callback(data, file):
@@ -54,7 +52,7 @@ def amcl_pose_callback(data, file):
     pose = data.pose.pose
     position = pose.position
 
-    amcl_pose_data.append((amcl_current_time, position.x, position.y))
+    file.write("time: {} | x: {} | y: {}".format(amcl_current_time, position.x, position.y))
 
 
 def clock_proxy_for_cpu_callback(data, file):
@@ -69,7 +67,7 @@ def clock_proxy_for_cpu_callback(data, file):
     value = commands.getstatusoutput(CPU_MONITOR_COMMAND)[1]
 
     if len(value) > 0:
-        cpu_monitor_data.append((cpu_current_time, float(value)))
+        file.write("time: {} | value: {}".format(cpu_current_time, float(value)))
 
 
 def particlecloud_proxy_for_amcl_cpu_callback(data, file):
@@ -84,7 +82,7 @@ def particlecloud_proxy_for_amcl_cpu_callback(data, file):
     value = commands.getstatusoutput(AMCL_CPU_MONITOR_COMMAND)[1]
 
     if len(value) > 0:
-        amcl_cpu_monitor_data.append((amcl_cpu_current_time, float(value)))
+        file.write("time: {} | value: {}".format(amcl_cpu_current_time, float(value)))
 
 
 # def close_files():
