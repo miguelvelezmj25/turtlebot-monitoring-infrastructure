@@ -31,6 +31,7 @@ def gazebo_model_states_callback(data):
     position = pose.position
 
     gazebo_pose_data.append((gazebo_current_time, position.x, position.y))
+    print gazebo_pose_data
 
 
 def amcl_pose_callback(data):
