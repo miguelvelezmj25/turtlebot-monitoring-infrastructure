@@ -8,6 +8,7 @@ import re
 import rospy
 import socket
 import ConfigParser
+import monitors
 
 config_parser = ConfigParser.RawConfigParser()
 config_file_path = r'.serverconfig'
@@ -15,13 +16,7 @@ config_parser.read(config_file_path)
 remote_host = config_parser.get(socket.gethostname(), 'simulator')
 remote_password = config_parser.get(socket.gethostname(), 'password')
 
-gazebo_pose_data = []
-amcl_pose_data = []
-cpu_monitor_data = []
-amcl_cpu_monitor_data = []
-move_base_cpu_monitor_data = []
 data_files = {}
-
 gazebo_log_error = None
 turtlebot_log_error = None
 
@@ -59,9 +54,9 @@ def startup(environment_configurations):
                      stderr=turtlebot_log_error, stdout=turtlebot_log_error)
     time.sleep(10)
 
-    rospy.init_node(NODE_NAME, anonymous=True)
-    # subprocess.Popen("rosrun cp1_gazebo " + MONITORS_FILE, shell=True, stderr=turtlebot_log_error,
-    #                  stdout=turtlebot_log_error)
+    # rospy.init_node(NODE_NAME, anonymous=True)
+    subprocess.Popen("rosrun cp1_gazebo " + MONITORS_FILE, shell=True, stderr=turtlebot_log_error,
+                     stdout=turtlebot_log_error)
     time.sleep(5)
 
 
@@ -122,11 +117,11 @@ def measure(id, configurations):
         measurements[RESULT] = SUCCESS
 
     measurements[DURATION] = duration
-    measurements[GROUND_TRUTH_POSE] = gazebo_pose_data
-    measurements[ESTIMATE_POSE] = amcl_pose_data
-    measurements[CPU_MONITOR] = cpu_monitor_data
-    measurements[AMCL_CPU_MONITOR] = amcl_cpu_monitor_data
-    measurements[MOVE_BASE_CPU_MONITOR] = move_base_cpu_monitor_data
+    measurements[GROUND_TRUTH_POSE] = monitors.gazebo_pose_data
+    measurements[ESTIMATE_POSE] = monitors.amcl_pose_data
+    measurements[CPU_MONITOR] = monitors.cpu_monitor_data
+    measurements[AMCL_CPU_MONITOR] = monitors.amcl_cpu_monitor_data
+    measurements[MOVE_BASE_CPU_MONITOR] = monitors.move_base_cpu_monitor_data
 
     shutil.rmtree('data/' + str(id))
 

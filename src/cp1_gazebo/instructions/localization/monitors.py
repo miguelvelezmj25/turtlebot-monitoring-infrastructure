@@ -8,6 +8,12 @@ from geometry_msgs.msg import PoseArray
 from gazebo_msgs.msg import ModelStates
 from rosgraph_msgs.msg import Clock
 
+gazebo_pose_data = []
+amcl_pose_data = []
+cpu_monitor_data = []
+amcl_cpu_monitor_data = []
+move_base_cpu_monitor_data = []
+
 CPU_MONITOR_COMMAND = "mpstat 1 1 | grep -o M..all........ | sed -e 's/M  all   //'"
 AMCL_CPU_MONITOR_COMMAND = "pidstat -t -C amcl 1 1 | grep -o .*-..amcl | sed 's/ *- *amcl//' | grep -o '......$'"
 MOVE_BASE_CPU_MONITOR_COMMAND = "pidstat -t -C move_base 1 1 | grep -o .*-..move_base | sed 's/ *- *move_base//' | grep -o '......$'"
