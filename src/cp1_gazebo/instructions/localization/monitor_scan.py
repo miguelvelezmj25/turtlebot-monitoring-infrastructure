@@ -8,7 +8,7 @@ from sensor_msgs.msg import LaserScan
 
 gamma = 0
 delta = 0
-queue_capacity = 1000
+QUEUE_CAPACITY = 1000
 
 publisher = rospy.Publisher('/scan_altered', LaserScan, queue_size=queue_capacity)
 
@@ -50,10 +50,10 @@ if __name__ == '__main__':
     laser_miscalibration = 'laser_miscalibration'
     laser_noise = 'laser_noise'
 
-    args = sys.argv[-1]
-
-    if len(args) == 0:
+    if len(sys.argv) == 1:
         args = "{}"
+    else:
+        args = sys.argv[-1]
 
     configurations = ast.literal_eval(args)
 
@@ -64,5 +64,5 @@ if __name__ == '__main__':
         delta = configurations[laser_noise]
 
     rospy.init_node('scan_monitor')
-    rospy.Subscriber('/scan', LaserScan, scan_callback, queue_size=queue_capacity)
+    rospy.Subscriber('/scan', LaserScan, scan_callback, queue_size=QUEUE_CAPACITY)
     rospy.spin()

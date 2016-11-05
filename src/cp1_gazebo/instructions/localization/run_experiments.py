@@ -69,26 +69,14 @@ def get_localization_uncertainty(id, duration, result, ground_truth_data, estima
     ground_data = ground_truth_data[:]
     estimate_data = estimate_monitor_data[:]
 
-    print ground_data
-    print estimate_data
-    print '############################################################'
-
     filter_data(estimate_data)
     filter_data(ground_data, estimate_data[0][0])
-
-    print ground_data
-    print estimate_data
-    print '############################################################'
 
     # Trim the ground data to have the same number of data points for both arrays
     ground_data = ground_data[0:len(estimate_data)]
 
     uncertainty = []
     nfp_id = mdb.get_nfp_id('mean_localization_error')
-
-    print ground_data
-    print estimate_data
-    print '############################################################'
 
     for i in range(0, len(ground_data)):
         calculation = math.sqrt(math.pow(ground_data[i][1] - estimate_data[i][1], 2)

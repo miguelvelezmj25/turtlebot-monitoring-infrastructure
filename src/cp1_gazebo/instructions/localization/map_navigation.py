@@ -11,6 +11,10 @@ from actionlib_msgs.msg import *
 from geometry_msgs.msg import Point
 
 
+AMCL = 'amcl'
+MAX_RUN_TIME = 80
+
+
 def configure_amcl(parameters):
     client = dynamic_reconfigure.client.Client("amcl")
     return client.update_configuration(parameters)
@@ -41,7 +45,7 @@ def move_to_goal(x_goal, y_goal):
     rospy.loginfo("Sending goal location ...")
     start_time = rospy.get_time()
     ac.send_goal(goal)
-    ac.wait_for_result(rospy.Duration(80))
+    ac.wait_for_result(rospy.Duration(MAX_RUN_TIME))
     end_time = rospy.get_time()
     rospy.loginfo("Elapsed time: " + str(end_time - start_time))
 
@@ -63,8 +67,8 @@ if __name__ == '__main__':
 
     rospy.init_node('map_navigation')
 
-    if 'amcl' in configurations:
-        rospy.loginfo(configure_amcl(configurations['amcl']))
+    if AMCL in configurations:
+        rospy.loginfo(configure_amcl(configurations[AMCL]))
 
     goal_reached = move_to_goal(target_x, target_y)
 
