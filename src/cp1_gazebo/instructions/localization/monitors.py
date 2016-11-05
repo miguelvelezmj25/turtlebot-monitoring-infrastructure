@@ -86,9 +86,13 @@ def cleanup_files():
     with open(all_monitors_file_name, 'r', 0) as all_monitors_file:
         data = all_monitors_file.read().splitlines()
 
-    with open(all_monitors_file_name, 'r', 0) as all_monitors_file:
-        all_monitors_file.writelines(data[1:])
-        print data
+        for data_file_name in data:
+            with open(data_file_name, 'r', 0) as data_file:
+                data = all_monitors_file.read().splitlines()
+
+            with open(data_file_name, 'w', 0) as data_file:
+                all_monitors_file.writelines(data[1:])
+                print data
 
 
 if __name__ == '__main__':

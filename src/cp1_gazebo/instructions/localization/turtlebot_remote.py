@@ -124,7 +124,7 @@ def measure(id, configurations):
         data = all_monitors_file.read().splitlines(True)
 
         for line in data:
-            print line
+            print 'line: {}'.format(line)
 
 
 
