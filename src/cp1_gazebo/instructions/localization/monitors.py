@@ -27,9 +27,9 @@ AMCL_CPU_MONITOR_COMMAND = "pidstat -t -C amcl 1 1 | grep -o .*-..amcl | sed 's/
 MOVE_BASE_CPU_MONITOR_COMMAND = "pidstat -t -C move_base 1 1 | grep -o .*-..move_base | sed 's/ *- *move_base//' | grep -o '......$'"
 
 
-def gazebo_model_states_callback(data, arguments):
-    print data
-    print arguments
+def gazebo_model_states_callback(data, file):
+    # print data
+    print file
     data_time = rospy.get_rostime().secs
 
     global gazebo_current_time
@@ -43,7 +43,7 @@ def gazebo_model_states_callback(data, arguments):
     gazebo_pose_data.append((gazebo_current_time, position.x, position.y))
 
 
-def amcl_pose_callback(data):
+def amcl_pose_callback(data, file):
     data_time = data.header.stamp.secs
 
     global amcl_current_time
@@ -57,7 +57,7 @@ def amcl_pose_callback(data):
     amcl_pose_data.append((amcl_current_time, position.x, position.y))
 
 
-def clock_proxy_for_cpu_callback(data):
+def clock_proxy_for_cpu_callback(data, file):
     data_time = rospy.get_rostime().secs
 
     global cpu_current_time
@@ -72,7 +72,7 @@ def clock_proxy_for_cpu_callback(data):
         cpu_monitor_data.append((cpu_current_time, float(value)))
 
 
-def particlecloud_proxy_for_amcl_cpu_callback(data):
+def particlecloud_proxy_for_amcl_cpu_callback(data, file):
     data_time = rospy.get_rostime().secs
 
     global amcl_cpu_current_time
@@ -87,16 +87,16 @@ def particlecloud_proxy_for_amcl_cpu_callback(data):
         amcl_cpu_monitor_data.append((amcl_cpu_current_time, float(value)))
 
 
-def close_files():
-    print "Closing monitor files"
-
-    for monitor_files in monitor_files:
-        monitor_files.close()
-
-    print "Done closing monitor files"
-
-
-rospy.on_shutdown(close_files())
+# def close_files():
+#     print "Closing monitor files"
+#
+#     for monitor_files in monitor_files:
+#         monitor_files.close()
+#
+#     print "Done closing monitor files"
+#
+#
+# rospy.on_shutdown(close_files())
 
 if __name__ == '__main__':
     rospy.init_node('custom_monitors', anonymous=True)
