@@ -166,6 +166,9 @@ def filter_data(data, start_time=-1):
                     j += 1
 
             i -= 1
+
+            filtered_data.append(tuple(entry))
+
         elif element[0] > current_time:
             current_time = element[0]
             entry.append(current_time)
@@ -174,9 +177,9 @@ def filter_data(data, start_time=-1):
             while j < len(element):
                 entry.append(element[j])
                 j += 1
-        # TODO should we check if the current element has the same time as the current time?
 
-        filtered_data.append(tuple(entry))
+            filtered_data.append(tuple(entry))
+        # TODO should we check if the current element has the same time as the current time?
 
         i += 1
 
