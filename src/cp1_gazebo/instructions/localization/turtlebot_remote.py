@@ -119,23 +119,40 @@ def measure(id, configurations):
     measurements[DURATION] = duration
 
     monitors.cleanup_files()
-    all_monitors_file_name = monitors.DATA_FOLDER + monitors.MONITORS_FILE + '.txt'
+    all_monitors_file_name = monitors.DATA_FOLDER + monitors.MONITORS_FILE
+    x_position_regex = '(?<=x: )(-)?[0-9]+.[0-9]+(e-[0-9]+)?'
+    y_position_regex = '(?<=y: )(-)?[0-9]+.[0-9]+(e-[0-9]+)?'
+    value_regex = '(?<=value: )(-)?[0-9]+.[0-9]+(e-[0-9]+)?'
+
     with open(all_monitors_file_name, 'r', 0) as all_monitors_file:
-        data = all_monitors_file.read().splitlines(True)
+        all_monitors_filenames = all_monitors_file.read().splitlines(True)
 
-        for line in data:
-            print 'line: {}'.format(line)
+        for monitor_file_name in all_monitors_filenames:
+            monitor_name = monitor_file_name.split('.')[0]
+            values = []
+            with open(monitors.DATA_FOLDER + monitor_file_name.strip(), 'r', 0) as monitor_data_file:
+                data = monitor_data_file.read().splitlines()
 
+                for entry in data:
+                    duration = re.search(time_regex, entry)
+                    x_position = re.search(x_position_regex, entry)
+                    y_position = re.search(y_position_regex, entry)
+                    value = re.search(value_regex, entry)
 
+                    # TODO Might need to change to float if we are going to get data all the time
+                    data_point = [int(duration.group(0))]
 
+                    if value is not None:
+                        data_point.append(float(value.group(0)))
 
-    measurements[GROUND_TRUTH_POSE] = monitors.gazebo_pose_data
-    measurements[ESTIMATE_POSE] = monitors.amcl_pose_data
-    measurements[CPU_MONITOR] = monitors.cpu_monitor_data
-    measurements[AMCL_CPU_MONITOR] = monitors.amcl_cpu_monitor_data
-    measurements[MOVE_BASE_CPU_MONITOR] = monitors.move_base_cpu_monitor_data
+                        values.append(tuple(data_point))
+                    elif x_position is not None and y_position is not None:
+                        data_point.append(float(x_position.group(0)))
+                        data_point.append(float(y_position.group(0)))
 
-    print measurements
+                        values.append(tuple(data_point))
+
+            measurements[monitor_name] = values
 
     shutil.rmtree('data/' + str(id))
 
