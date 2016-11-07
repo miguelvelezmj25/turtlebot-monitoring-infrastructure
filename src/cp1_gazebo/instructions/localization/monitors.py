@@ -91,8 +91,11 @@ def cleanup_files():
                 data = data_file.read().splitlines()
 
             with open(DATA_FOLDER + data_file_name, 'w', 0) as data_file:
-                data_file.writelines(data[1:])
-                print data
+                i = 1
+
+                while i < len(data):
+                    data_file.write(data[i] + '\n')
+                    i += 1
 
 
 if __name__ == '__main__':
@@ -101,7 +104,7 @@ if __name__ == '__main__':
     if not os.path.exists(DATA_FOLDER):
         os.mkdir(DATA_FOLDER)
 
-    all_monitors_file = open(DATA_FOLDER + MONITORS_FILE + '.txt', "w", 0)
+    all_monitors_file = open(DATA_FOLDER + MONITORS_FILE, "w", 0)
 
     gazebo_current_time = 0
     monitor_file = open(DATA_FOLDER + GROUND_TRUTH_POSE + '.txt', "w", 0)
