@@ -48,11 +48,11 @@ def startup(environment_configurations):
     turtlebot_log_error = open('log/turtlebot_remote.log', 'a+', 0)
     subprocess.Popen("roslaunch cp1_gazebo robot-altered.launch", shell=True, stderr=turtlebot_log_error,
                      stdout=turtlebot_log_error)
-    time.sleep(5)
+    time.sleep(7)
 
     subprocess.Popen("rosrun cp1_gazebo " + MONITOR_SCAN + ' "' + str(environment_configurations) + '"', shell=True,
                      stderr=turtlebot_log_error, stdout=turtlebot_log_error)
-    time.sleep(10)
+    time.sleep(7)
 
     # rospy.init_node(NODE_NAME, anonymous=True)
     subprocess.Popen("python " + MONITORS_FILE, shell=True)#, stderr=turtlebot_log_error,
@@ -140,7 +140,7 @@ def measure(id, configurations):
                     value = re.search(value_regex, entry)
 
                     # TODO Might need to change to float if we are going to get data all the time
-                    data_point = [int(duration.group(0))]
+                    data_point = [float(duration.group(0))]
 
                     if value is not None:
                         data_point.append(float(value.group(0)))
@@ -156,4 +156,5 @@ def measure(id, configurations):
 
     shutil.rmtree('data/' + str(id))
 
+    print measurements
     return measurements

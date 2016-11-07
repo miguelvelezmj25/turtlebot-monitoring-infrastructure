@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import subprocess
 import commands
 import rospy
 import os
@@ -22,66 +23,66 @@ AMCL_CPU_MONITOR_COMMAND = "pidstat -t -C amcl 1 1 | grep -o .*-..amcl | sed 's/
 MOVE_BASE_CPU_MONITOR_COMMAND = "pidstat -t -C move_base 1 1 | grep -o .*-..move_base | sed 's/ *- *move_base//' | grep -o '......$'"
 
 
-def gazebo_model_states_callback(data, file):
-    data_time = rospy.get_rostime().secs
-
-    global gazebo_current_time
-    if gazebo_current_time == data_time:
-        return
-
-    gazebo_current_time = data_time
-    pose = data.pose[2]
-    position = pose.position
-
-    file.write("time: {} | x: {} | y: {}\n".format(gazebo_current_time, position.x, position.y))
-
-
-def amcl_pose_callback(data, file):
-    data_time = data.header.stamp.secs
-
-    global amcl_current_time
-    if amcl_current_time == data_time:
-        return
-
-    amcl_current_time = data_time
-    pose = data.pose.pose
-    position = pose.position
-
-    file.write("time: {} | x: {} | y: {}\n".format(amcl_current_time, position.x, position.y))
-
-
-def clock_proxy_for_cpu_callback(data, file):
-    data_time = rospy.get_rostime().secs
-
-    global cpu_current_time
-    if cpu_current_time == data_time:
-        return
-
-    cpu_current_time = data_time
-
-    value = commands.getstatusoutput(CPU_MONITOR_COMMAND)[1]
-
-    if len(value) > 0:
-        file.write("time: {} | value: {}\n".format(cpu_current_time, float(value)))
-
-
-def particlecloud_proxy_for_amcl_cpu_callback(data, file):
-    data_time = rospy.get_rostime().secs
-
-    global amcl_cpu_current_time
-    if amcl_cpu_current_time == data_time:
-        return
-
-    amcl_cpu_current_time = data_time
-
-    value = commands.getstatusoutput(AMCL_CPU_MONITOR_COMMAND)[1]
-
-    if len(value) > 0:
-        file.write("time: {} | value: {}\n".format(amcl_cpu_current_time, float(value)))
+# def gazebo_model_states_callback(data, file):
+#     data_time = rospy.get_rostime().to_sec()
+#
+#     global gazebo_current_time
+#     # if gazebo_current_time == data_time:
+#     #     return
+#
+#     gazebo_current_time = float(data_time)
+#     pose = data.pose[2]
+#     position = pose.position
+#
+#     file.write("time: {} | x: {} | y: {}\n".format(gazebo_current_time, position.x, position.y))
+#
+#
+# def amcl_pose_callback(data, file):
+#     data_time = str(data.header.stamp.secs) + '.' + str(data.header.stamp.nsecs)
+#
+#     # global amcl_current_time
+#     # if amcl_current_time == data_time:
+#     #     return
+#
+#     amcl_current_time = float(data_time)
+#     pose = data.pose.pose
+#     position = pose.position
+#
+#     file.write("time: {} | x: {} | y: {}\n".format(amcl_current_time, position.x, position.y))
+#
+#
+# def clock_proxy_for_cpu_callback(data, file):
+#     data_time = rospy.get_rostime().secs
+#
+#     global cpu_current_time
+#     if cpu_current_time == data_time:
+#         return
+#
+#     cpu_current_time = data_time
+#
+#     value = commands.getstatusoutput(CPU_MONITOR_COMMAND)[1]
+#
+#     if len(value) > 0:
+#         file.write("time: {} | value: {}\n".format(cpu_current_time, float(value)))
+#
+#
+# def particlecloud_proxy_for_amcl_cpu_callback(data, file):
+#     data_time = rospy.get_rostime().secs
+#
+#     global amcl_cpu_current_time
+#     if amcl_cpu_current_time == data_time:
+#         return
+#
+#     amcl_cpu_current_time = data_time
+#
+#     value = commands.getstatusoutput(AMCL_CPU_MONITOR_COMMAND)[1]
+#
+#     if len(value) > 0:
+#         file.write("time: {} | value: {}\n".format(amcl_cpu_current_time, float(value)))
 
 
 def cleanup_files():
-    all_monitors_file_name = DATA_FOLDER + MONITORS_FILE + '.txt'
+    all_monitors_file_name = DATA_FOLDER + MONITORS_FILE
 
     with open(all_monitors_file_name, 'r', 0) as all_monitors_file:
         data = all_monitors_file.read().splitlines()
@@ -99,38 +100,48 @@ def cleanup_files():
 
 
 if __name__ == '__main__':
-    rospy.init_node('custom_monitors', anonymous=True)
+    rospy.init_node('monitors_manager', anonymous=True)
 
     if not os.path.exists(DATA_FOLDER):
         os.mkdir(DATA_FOLDER)
 
+    monitors = ['ground_truth_pose.py']
+
     all_monitors_file = open(DATA_FOLDER + MONITORS_FILE, "w", 0)
 
-    gazebo_current_time = 0
-    monitor_file = open(DATA_FOLDER + GROUND_TRUTH_POSE + '.txt', "w", 0)
-    all_monitors_file.write(GROUND_TRUTH_POSE + ".txt\n")
-    rospy.Subscriber("/gazebo/model_states", ModelStates, callback=gazebo_model_states_callback,
-                     callback_args=monitor_file, queue_size=1)
-
-    amcl_current_time = 0
-    monitor_file = open(DATA_FOLDER + ESTIMATE_POSE + '.txt', "w", 0)
-    all_monitors_file.write(ESTIMATE_POSE + ".txt\n")
-    rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, callback=amcl_pose_callback,
-                     callback_args=monitor_file, queue_size=1)
-
-    cpu_current_time = 0
-    monitor_file = open(DATA_FOLDER + CPU_MONITOR + '.txt', "w", 0)
-    all_monitors_file.write(CPU_MONITOR + ".txt\n")
-    rospy.Subscriber("/clock", Clock, callback=clock_proxy_for_cpu_callback,
-                     callback_args=monitor_file, queue_size=1)
-
-    amcl_cpu_current_time = 0
-    monitor_file = open(DATA_FOLDER + AMCL_CPU_MONITOR + '.txt', "w", 0)
-    all_monitors_file.write(AMCL_CPU_MONITOR + ".txt\n")
-    rospy.Subscriber("/particlecloud", PoseArray, callback=particlecloud_proxy_for_amcl_cpu_callback,
-                     callback_args=monitor_file, queue_size=1)
+    for monitor in monitors:
+        all_monitors_file.write(monitor.strip('.')[0] + ".txt\n")
 
     all_monitors_file.close()
+
+    for monitor in monitors:
+        subprocess.Popen('python ' + monitor, shell=True)
+
+    # gazebo_current_time = 0
+    # monitor_file = open(DATA_FOLDER + GROUND_TRUTH_POSE + '.txt', "w", 0)
+    # all_monitors_file.write(GROUND_TRUTH_POSE + ".txt\n")
+    # rospy.Subscriber("/gazebo/model_states", ModelStates, callback=gazebo_model_states_callback,
+    #                  callback_args=monitor_file, queue_size=1)
+    #
+    # amcl_current_time = 0
+    # monitor_file = open(DATA_FOLDER + ESTIMATE_POSE + '.txt', "w", 0)
+    # all_monitors_file.write(ESTIMATE_POSE + ".txt\n")
+    # rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, callback=amcl_pose_callback,
+    #                  callback_args=monitor_file, queue_size=1)
+    #
+    # cpu_current_time = 0
+    # monitor_file = open(DATA_FOLDER + CPU_MONITOR + '.txt', "w", 0)
+    # all_monitors_file.write(CPU_MONITOR + ".txt\n")
+    # rospy.Subscriber("/clock", Clock, callback=clock_proxy_for_cpu_callback,
+    #                  callback_args=monitor_file, queue_size=1)
+    #
+    # amcl_cpu_current_time = 0
+    # monitor_file = open(DATA_FOLDER + AMCL_CPU_MONITOR + '.txt', "w", 0)
+    # all_monitors_file.write(AMCL_CPU_MONITOR + ".txt\n")
+    # rospy.Subscriber("/particlecloud", PoseArray, callback=particlecloud_proxy_for_amcl_cpu_callback,
+    #                  callback_args=monitor_file, queue_size=1)
+
+
     rospy.spin()
 
 
