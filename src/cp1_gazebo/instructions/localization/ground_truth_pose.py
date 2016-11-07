@@ -15,7 +15,7 @@ def gazebo_model_states_callback(data, file):
     # if gazebo_current_time == data_time:
     #     return
 
-    gazebo_current_time = float(data_time)
+    gazebo_current_time = data_time
     pose = data.pose[2]
     position = pose.position
 
@@ -27,7 +27,6 @@ if __name__ == '__main__':
 
     gazebo_current_time = 0
     monitor_file = open(monitors.DATA_FOLDER + GROUND_TRUTH_POSE + '.txt', "w", 0)
-    monitors.all_monitors_file.write(GROUND_TRUTH_POSE + ".txt\n")
     rospy.Subscriber("/gazebo/model_states", ModelStates, callback=gazebo_model_states_callback,
                      callback_args=monitor_file, queue_size=1)
     rospy.spin()
