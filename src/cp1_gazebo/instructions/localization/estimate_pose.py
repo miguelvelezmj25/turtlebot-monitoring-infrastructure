@@ -5,7 +5,7 @@ import monitors
 
 from geometry_msgs.msg import PoseWithCovarianceStamped
 
-GROUND_TRUTH_POSE = 'ground_truth_pose'
+ESTIMATE_POSE = 'estimate_pose'
 
 
 def amcl_pose_callback(data, file):
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     rospy.init_node('ground_truth_pose_monitor', anonymous=True)
 
     amcl_current_time = 0
-    monitor_file = open(monitors.DATA_FOLDER + monitors.ESTIMATE_POSE + '.txt', "w", 0)
+    monitor_file = open(monitors.DATA_FOLDER + ESTIMATE_POSE + '.txt', "w", 0)
     rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, callback=amcl_pose_callback,
                      callback_args=monitor_file, queue_size=1)
     rospy.spin()
