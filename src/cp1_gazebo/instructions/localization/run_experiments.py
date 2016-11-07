@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# import turtlebot_remote
+import turtlebot_remote
 import ConfigParser
 import signal
 import math
