@@ -33,7 +33,7 @@ if __name__ == '__main__':
         os.mkdir(DATA_FOLDER)
 
     # TODO make this read from a config file
-    monitors = ['ground_truth_pose.py', 'estimate_pose.py', 'amcl_cpu_monitor', 'cpu_monitor']
+    monitors = ['ground_truth_pose.py', 'estimate_pose.py', 'amcl_cpu_monitor.py', 'cpu_monitor.py']
 
     all_monitors_file = open(DATA_FOLDER + MONITORS_FILE, "w", 0)
 
