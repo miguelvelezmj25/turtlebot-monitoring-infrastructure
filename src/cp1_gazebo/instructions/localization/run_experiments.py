@@ -269,7 +269,7 @@ def measure(id, environment_configurations, amcl_configurations):
     time_range = (measurements[turtlebot_remote.ESTIMATE_POSE][0][0],
                   measurements[turtlebot_remote.ESTIMATE_POSE][-1][0])
 
-    # These nfps should match the db
+    # TODO These nfps should match the db
     get_cpu_utilization(id, 'mean_cpu_utilization', measurements[turtlebot_remote.CPU_MONITOR], time_range)
     get_cpu_utilization(id, 'mean_amcl_cpu_utilization', measurements[turtlebot_remote.AMCL_CPU_MONITOR], time_range)
 

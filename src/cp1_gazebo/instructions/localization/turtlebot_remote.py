@@ -156,5 +156,5 @@ def measure(id, configurations):
 
     shutil.rmtree('data/' + str(id))
 
-    print measurements
+    # print measurements
     return measurements
