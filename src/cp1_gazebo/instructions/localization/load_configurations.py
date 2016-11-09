@@ -100,8 +100,8 @@ def add_configurations_to_explore(db, configurations, values):
             else:
                 id = mdb.add_configuration(option)
 
-            mdb.add_todo(id, 10, worker=servers[2])
-            mdb.add_todo(id, 10, worker=servers[3])
+            mdb.add_todo(id, 10, worker=servers[0])
+            mdb.add_todo(id, 10, worker=servers[1])
             # for server in servers:
             #     mdb.add_todo(id, 5, worker=server)
 
@@ -228,8 +228,9 @@ amcl_parameters_not_in_website = ['beam_skip_distance', 'beam_skip_threshold', '
                                   'do_beamskip']
 
 
-environment_parameters = [('laser_miscalibration', 0, -0.5, 0.5), ('laser_noise', 0, -0.5, 0.5)]
+environment_parameters = [('laser_miscalibration', 0, -0.5, 0.5), ('laser_noise', 0, 0, 1.0)]
 environment_parameters_to_explore = ['laser_miscalibration', 'laser_noise']
 environment_parameters_to_explore_values = [[-0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5],
-                                            [-0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
+                                            [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
                                             ]
+
