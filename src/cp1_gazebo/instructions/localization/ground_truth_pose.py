@@ -9,11 +9,12 @@ GROUND_TRUTH_POSE = 'ground_truth_pose'
 
 
 def gazebo_model_states_callback(data, file):
-    data_time = rospy.get_rostime().to_sec()
+    # data_time = rospy.get_rostime().to_sec()
+    data_time = rospy.get_rostime().secs
 
     global gazebo_current_time
-    # if gazebo_current_time == data_time:
-    #     return
+    if gazebo_current_time == data_time:
+        return
 
     gazebo_current_time = data_time
     pose = data.pose[2]

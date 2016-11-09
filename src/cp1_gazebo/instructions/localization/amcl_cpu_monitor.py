@@ -11,11 +11,12 @@ AMCL_CPU_MONITOR_COMMAND = "pidstat -t -C amcl 1 1 | grep -o .*-..amcl | sed 's/
 
 
 def particlecloud_proxy_for_amcl_cpu_callback(data, file):
-    data_time = rospy.get_rostime().to_sec()
+    # data_time = rospy.get_rostime().to_sec()
+    data_time = rospy.get_rostime().secs
 
     global amcl_cpu_current_time
-    # if amcl_cpu_current_time == data_time:
-    #     return
+    if amcl_cpu_current_time == data_time:
+        return
 
     amcl_cpu_current_time = data_time
 

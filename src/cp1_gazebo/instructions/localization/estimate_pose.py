@@ -9,11 +9,12 @@ ESTIMATE_POSE = 'estimate_pose'
 
 
 def amcl_pose_callback(data, file):
-    data_time = str(data.header.stamp.secs) + '.' + str(data.header.stamp.nsecs)
+    # data_time = str(data.header.stamp.secs) + '.' + str(data.header.stamp.nsecs)
+    data_time = data.header.stamp.secs
 
     global amcl_current_time
-    # if amcl_current_time == data_time:
-    #     return
+    if amcl_current_time == data_time:
+        return
 
     amcl_current_time = float(data_time)
     pose = data.pose.pose

@@ -11,11 +11,12 @@ CPU_MONITOR_COMMAND = "mpstat 1 1 | grep -o M..all........ | sed -e 's/M  all   
 
 
 def clock_proxy_for_cpu_callback(data, file):
-    data_time = rospy.get_rostime().to_sec()
+    # data_time = rospy.get_rostime().to_sec()
+    data_time = rospy.get_rostime().secs
 
     global cpu_current_time
-    # if cpu_current_time == data_time:
-    #     return
+    if cpu_current_time == data_time:
+        return
 
     cpu_current_time = data_time
 
