@@ -37,7 +37,7 @@ def scan_callback(data):
             new_values.append(new_value)
 
         data.ranges = new_values
-    elif gamma > 0:
+    elif gamma != 0:
         for value in data.ranges:
             new_values.append(value * (1 + gamma))
 
