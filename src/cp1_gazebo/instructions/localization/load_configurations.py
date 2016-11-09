@@ -16,31 +16,31 @@ def add_default_configuration(db):
 
     configuration = ''
 
-    for option in filter_options:
+    for option in filter_parameters:
         configuration += str(option[0]) + ' ' + str(option[1]) + ', '
 
-    for option in filter_options_combine:
+    for option in filter_parameters_combine:
         configuration += str(option[0]) + ' ' + str(option[1]) + ', '
 
-    for option in filter_options_boolean:
+    for option in filter_parameters_boolean:
         configuration += str(option[0]) + ' ' + str(option[1]) + ', '
 
-    for option in laser_options:
+    for option in laser_parameters:
         configuration += str(option[0]) + ' ' + str(option[1]) + ', '
 
-    for option in laser_options_combine:
+    for option in laser_parameters_combine:
         configuration += str(option[0]) + ' ' + str(option[1]) + ', '
 
-    for option in laser_options_string:
+    for option in laser_parameters_string:
         configuration += str(option[0]) + ' ' + str(option[1]) + ', '
 
-    for option in odometry_options:
+    for option in odometry_parameters:
         configuration += str(option[0]) + ' ' + str(option[1]) + ', '
 
-    for option in odometry_options_string:
+    for option in odometry_parameters_string:
         configuration += str(option[0]) + ' ' + str(option[1]) + ', '
 
-    for option in odometry_options_boolean:
+    for option in odometry_parameters_boolean:
         configuration += str(option[0]) + ' ' + str(option[1]) + ', '
 
     configuration = configuration[:-2]
@@ -167,69 +167,69 @@ def add_min_and_max_configurations(db, options, iterations=5):
     mdb.shutdown()
 
 
-filter_options = [('kld_err', 0.01, 0.0, 1.0), ('kld_z', 0.99, 0.0, 1.0), ('update_min_d', 0.2, 0.0, 5.0),
-                 ('update_min_a', 3.14159/6.0, 0.0, 6.28318), ('resample_interval', 2, 1, 20),
-                 ('transform_tolerance', 0.1, 0.0, 2.0), ('recovery_alpha_slow', 0.0, 0.0, 0.5),
-                 ('recovery_alpha_fast', 0.0, 0.0, 1.0), ('gui_publish_rate', -1.0, 10.0, 100.0),
-                 ('save_pose_rate', 0.5, 0.0, 10.0)
-                 ]
-filter_options_combine = [('min_particles', 100, 5, 1000), ('max_particles', 5000, 5, 10000)]
-filter_options_boolean = [('use_map_topic', False)]
+filter_parameters = [('kld_err', 0.01, 0.0, 1.0), ('kld_z', 0.99, 0.0, 1.0), ('update_min_d', 0.2, 0.0, 5.0),
+                     ('update_min_a', 3.14159/6.0, 0.0, 6.28318), ('resample_interval', 2, 1, 20),
+                     ('transform_tolerance', 0.1, 0.0, 2.0), ('recovery_alpha_slow', 0.0, 0.0, 0.5),
+                     ('recovery_alpha_fast', 0.0, 0.0, 1.0), ('gui_publish_rate', -1.0, 10.0, 100.0),
+                     ('save_pose_rate', 0.5, 0.0, 10.0)
+                     ]
+filter_parameters_combine = [('min_particles', 100, 5, 1000), ('max_particles', 5000, 5, 10000)]
+filter_parameters_boolean = [('use_map_topic', False)]
 
 
-filter_options_to_explore = ['recovery_alpha_slow', 'update_min_d', 'update_min_a', 'save_pose_rate',
+filter_parameters_to_explore = ['recovery_alpha_slow', 'update_min_d', 'update_min_a', 'save_pose_rate',
                              'resample_interval',  'transform_tolerance'
-                             ]
-filter_options_to_explore_values = [[0.0, 0.1, 0.2, 0.3, 0.4, 0.5],
-                                    [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0,
-                                     3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4, 4.6, 4.8, 5.0],
-                                    [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.28318],
-                                    [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5,
-                                     8.0, 8.5, 9.0, 9.5, 10.0],
-                                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-                                    [0.0, 0.1, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0]
-                                    ]
-filter_options_combine_to_explore = [('particles', 'min_particles', 'max_particles')]
-filter_options_combine_to_explore_values = [[5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700,
-                                             800, 900, 1000]]
+                                ]
+filter_parameters_to_explore_values = [[0.0, 0.1, 0.2, 0.3, 0.4, 0.5],
+                                       [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0,
+                                        3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4, 4.6, 4.8, 5.0],
+                                       [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.28318],
+                                       [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5,
+                                        8.0, 8.5, 9.0, 9.5, 10.0],
+                                       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+                                       [0.0, 0.1, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0]
+                                       ]
+filter_parameters_combine_to_explore = [('particles', 'min_particles', 'max_particles')]
+filter_parameters_combine_to_explore_values = [[5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700,
+                                                800, 900, 1000]]
 
 
-laser_options = [('laser_max_beams', 30, 1, 100), ('laser_z_hit', 0.95, 0.1, 10.0), ('laser_z_short', 0.1, 0.01, 10.0),
-                 ('laser_z_max', 0.05, 0.01, 10.0), ('laser_z_rand', 0.05, 0.01, 10.0),
-                 ('laser_sigma_hit', 0.2, 0.1, 10.0), ('laser_lambda_short', 0.1, 0.01, 10.0),
-                 ('laser_likelihood_max_dist', 2.0, 0.1, 20.0)
-                 ]
-laser_options_combine = [('laser_min_range', -1.0, 1.0, 1000.0), ('laser_max_range', -1.0, 1.0, 1000.0)]
-laser_options_string = [('laser_model_type', "'likelihood_field'")]
-
-laser_options_to_explore = ['laser_max_beams', 'laser_z_hit', 'laser_z_short', 'laser_z_max', 'laser_z_rand',
-                            'laser_sigma_hit', 'laser_lambda_short', 'laser_likelihood_max_dist'
-                            ]
-laser_options_to_explore_values = [[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-                                   [0.1, 0.95, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                   [0.01, 0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                   [0.01, 0.05, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                   [0.01, 0.05, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                   [0.1, 0.2, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                   [0.01, 0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                   [0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 15.0, 20.0]
-                                   ]
-
-
-odometry_options = [('odom_alpha1', 0.2, 0.1, 10.0), ('odom_alpha2', 0.2, 0.1, 10.0), ('odom_alpha3', 0.2, 0.1, 10.0),
-                    ('odom_alpha4', 0.2, 0.1, 10.0), ('odom_alpha5', 0.2, 0.1, 10.0)
+laser_parameters = [('laser_max_beams', 30, 1, 100), ('laser_z_hit', 0.95, 0.1, 10.0), ('laser_z_short', 0.1, 0.01, 10.0),
+                    ('laser_z_max', 0.05, 0.01, 10.0), ('laser_z_rand', 0.05, 0.01, 10.0),
+                    ('laser_sigma_hit', 0.2, 0.1, 10.0), ('laser_lambda_short', 0.1, 0.01, 10.0),
+                    ('laser_likelihood_max_dist', 2.0, 0.1, 20.0)
                     ]
-odometry_options_string = [('odom_model_type', "'diff'"), ('odom_frame_id', "'odom'"), ('base_frame_id', "'base_link'"),
-                           ('global_frame_id', "'map'")]
-odometry_options_boolean = [('tf_broadcast', True)]
+laser_parameters_combine = [('laser_min_range', -1.0, 1.0, 1000.0), ('laser_max_range', -1.0, 1.0, 1000.0)]
+laser_parameters_string = [('laser_model_type', "'likelihood_field'")]
+
+laser_parameters_to_explore = ['laser_max_beams', 'laser_z_hit', 'laser_z_short', 'laser_z_max', 'laser_z_rand',
+                               'laser_sigma_hit', 'laser_lambda_short', 'laser_likelihood_max_dist'
+                               ]
+laser_parameters_to_explore_values = [[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+                                      [0.1, 0.95, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                      [0.01, 0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                      [0.01, 0.05, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                      [0.01, 0.05, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                      [0.1, 0.2, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                      [0.01, 0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                      [0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 15.0, 20.0]
+                                      ]
 
 
-amcl_options_not_in_website = ['beam_skip_distance', 'beam_skip_threshold', 'first_map_only', 'restore_defaults',
-                               'do_beamskip']
+odometry_parameters = [('odom_alpha1', 0.2, 0.1, 10.0), ('odom_alpha2', 0.2, 0.1, 10.0), ('odom_alpha3', 0.2, 0.1, 10.0),
+                       ('odom_alpha4', 0.2, 0.1, 10.0), ('odom_alpha5', 0.2, 0.1, 10.0)
+                       ]
+odometry_parameters_string = [('odom_model_type', "'diff'"), ('odom_frame_id', "'odom'"), ('base_frame_id', "'base_link'"),
+                              ('global_frame_id', "'map'")]
+odometry_parameters_boolean = [('tf_broadcast', True)]
 
 
-miscalibration = [('laser_miscalibration', 0, -0.5, 0.5), ('laser_noise', 0, -0.5, 0.5)]
-miscalibration_to_explore = ['laser_miscalibration', 'laser_noise']
-miscalibration_to_explore_values = [[-0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5],
-                                    [-0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
-                                    ]
+amcl_parameters_not_in_website = ['beam_skip_distance', 'beam_skip_threshold', 'first_map_only', 'restore_defaults',
+                                  'do_beamskip']
+
+
+environment_parameters = [('laser_miscalibration', 0, -0.5, 0.5), ('laser_noise', 0, -0.5, 0.5)]
+environment_parameters_to_explore = ['laser_miscalibration', 'laser_noise']
+environment_parameters_to_explore_values = [[-0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5],
+                                            [-0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
+                                            ]

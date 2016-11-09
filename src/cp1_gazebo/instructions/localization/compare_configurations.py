@@ -154,57 +154,75 @@ def compare_configuration(configuration, min, max):
     subprocess.call('Rscript ' + compare_configurations_r_script + r_arguments, shell=True)
 
 
-def compare_particle_filter_options():
+def compare_particle_filter_parameters():
     """
-    compare_particle_filter_options()
+    compare_particle_filter_parameters()
 
     Graph configurations compare the default values to the minimum and maximum values
     """
-    for configuration in configurations.filter_options:
+    for configuration in configurations.filter_parameters:
         compare_configuration(configuration[0], configuration[2], configuration[3])
 
 
-def compare_laser_options():
+def compare_laser_parameters():
     """
-    compare_laser_options()
+    compare_laser_parameters()
 
     Graph configurations compare the default values to the minimum and maximum values
     """
-    for configuration in configurations.laser_options:
+    for configuration in configurations.laser_parameters:
         compare_configuration(configuration[0], configuration[2], configuration[3])
 
 
-def graph_particle_filter_options():
+def compare_environment_parameters():
     """
-    graph_particle_filter_options()
+
+    """
+    for configuration in configurations.environment_parameters:
+        compare_configuration(configuration[0], configuration[2], configuration[3])
+
+
+def graph_particle_filter_parameters():
+    """
+    graph_particle_filter_parameters()
 
     Graph all options of all the configurations in the particle filter that are worth exploring
     """
-    for option in configurations.filter_options_to_explore:
-        default = [item for item in configurations.filter_options if item[0] == option][0][1]
+    for option in configurations.filter_parameters_to_explore:
+        default = [item for item in configurations.filter_parameters if item[0] == option][0][1]
         graph_configuration_options(option, default)
 
 
-def graph_laser_options():
+def graph_laser_parameters():
     """
-    graph_laser_options()
+    graph_laser_parameters()
 
     Graph all options of all the configurations in the laser that are worth exploring
     """
-    for option in configurations.laser_options_to_explore:
-        default = [item for item in configurations.laser_options if item[0] == option][0][1]
+    for option in configurations.laser_parameters_to_explore:
+        default = [item for item in configurations.laser_parameters if item[0] == option][0][1]
         graph_configuration_options(option, default)
 
 
-def graph_particle_filter_options_combine():
+def graph_environment_parameters():
     """
-    graph_particle_filter_options_combine()
+    graph_environment_parameters()
+
+    """
+    for configuration in configurations.environment_parameters_to_explore:
+        default = [item for item in configurations.environment_parameters if item[0] == configuration][0][1]
+        graph_configuration_options(configuration, default)
+
+
+def graph_particle_filter_parameters_combine():
+    """
+    graph_particle_filter_parameters_combine()
 
     Graph all options of all the combine configurations in the particle filter that are worth exploring
     """
     mdb.startup(turtlebot_explore_db)
 
-    for options in configurations.filter_options_combine_to_explore:
+    for options in configurations.filter_parameters_combine_to_explore:
         name = options[0]
         options = options[1:]
         combine_option = ''
@@ -218,4 +236,3 @@ def graph_particle_filter_options_combine():
         graph_configuration_options(name, id_option_tuples=tuples)
 
     mdb.shutdown()
-
