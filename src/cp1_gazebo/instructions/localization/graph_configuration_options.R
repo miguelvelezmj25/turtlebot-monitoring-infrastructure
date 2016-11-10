@@ -92,7 +92,8 @@ while (server <= length(servers))
 
     png(file = paste(plot_folder, option, '_', nfp, '_', server_name, '.png', sep=''), width=1100,height=1100,res=150)
     par(mai=c(1.02,1.02,0.82,0.42))
-    plot(x, y, pch=19, xlab="Option", ylab="Value", xlim=c(x[1], x[sum(!is.na(y))]), ylim=c(min_y, max_y))
+    plot(x, y, pch=19, xlab="Option", ylab="Value", xlim=c(x[1], x[length(x)]), ylim=c(min_y, max_y))
+#    axis(2, at=c(0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4))
 #    plot(x, y, pch=19, xlab="option", ylab="value", xlim=c(x[1], x[y_length]))
     title(paste(option, '_', nfp, '_', server_name, sep=''))
     lines(x, y)
@@ -100,7 +101,7 @@ while (server <= length(servers))
 
     if(!default == 'NA')
     {
-    abline(v=default, col='blue', lwd=3, lty=2)
+        abline(v=default, col='blue', lwd=3, lty=2)
     }
 
     dev.off()
