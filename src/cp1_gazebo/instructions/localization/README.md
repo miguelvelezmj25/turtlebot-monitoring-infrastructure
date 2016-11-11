@@ -3,37 +3,80 @@
 This folder contains the scripts used to measure the performance and behavior 
 of the TurtleBot. It uses a combination of Python, bash, and R scripts to execute 
 and monitor TurtleBot, and graph the results to compare and analyze the execution.
-<!--ADD IMAGE OF INFRASTRUCTURE-->
 
-## Required Software
+The following picture presents a view of the infrastructure
+
+![Infrastructure](visuals/Infrastructure.png)
+
+The master machine can run any OS. The TurtleBot and Simulator machines have to run
+Linux.
+
+## Technical Requirements
 
 * [Jetway](https://github.com/miguelvelezmj25/Jetway)
-This is a forked repo from Christian Kästner. It is meanly used to communicate 
+This is a forked repo from Christian Kästner. It is mainly used to communicate 
 with a database. 
 
-* [Fabric](http://www.fabfile.org/)
+* [Fabric](http://www.fabfile.org/) (Optional. Install in master machine)
 This command-line tool is installed and used in the master machine for streamlining 
 the use of SSH for application deployment or systems administration tasks. It is
 used to send jobs and manage the machines that execute the experiments
 
-* [Fabfiles](https://github.com/miguelvelezmj25/fabfiles)
+* [Fabfiles](https://github.com/miguelvelezmj25/fabfiles) (Optional. Clone in master machine)
 This project contains a collection of fabfiles used along side Fabric to manage and
-send jobs to multiple machines
+send jobs to multiple machines. This project contains files needed in the simulator machine
+if you run your experiments headless.
 
-* sshpass 
+* sshpass (Required. Install in TurtleBot machine)
 This Linux utility allows to run ssh using the mode referred to as "keyboard-interactive" 
 password authentication, but in non-interactive mode. This is used in a bash scripts
-to initialize and terminate processes for the gazebo simulator in order machines.
+to initialize and terminate processes for the gazebo simulator in order machines. You 
+can install it by typing:
+ 
+        sudo apt-get install sshpass
 
-* mpstat (part of Sysstat)
-This Linux command writes to standard output activities for each available processor.
-It is used to measure CPU utilization of an entire machine.
+* mpstat (Required. Install in TurtleBot machine)
+Part of Sysstat. This Linux command writes to standard output activities for each available processor.
+It is used to measure CPU utilization of an entire machine. You can install it by typing:
+ 
+        sudo apt-get install sysstat
+
+* Xorg dummy driver (Required to run the simulator headless. Install in  Simulator machine)
+This driver allows to run the simulator headless. You can install it by typing:
+ 
+        sudo apt-get install xserver-xorg-video-dummy
+
+
+## Additional Files
+
+The following files contain sensitive data that is unique to each individual who uses this
+reppo. Therefore, they are not provided in this repo and must be installed in the machines running
+the TurtleBot and Simulator. 
+
+* .dbconfig
+This file is used to connect to the database that stores the jobs and saves the data from
+the executions. It must have the following structure:
+
+        [section]
+        hostname = hostname
+        user = user
+        password = password
+        database = database
+
+* .serverconfig
+This file is used to configure the communication between the TurtleBot and Simulator machines.
+It mus have the following structure:
+
+        [section]
+        simulator = simulator
+        username = username
+        password = password
 
 ## Database
 
 This project requires a database to store the configurations of TurtleBot, the time
 series and summary measurements, the non-functional properties to be measured, and
-jobs to do. The following is the DDL from the database we currently use
+jobs to do. The following is the DDL from the database currently used.
 
     CREATE TABLE nfps
     (
