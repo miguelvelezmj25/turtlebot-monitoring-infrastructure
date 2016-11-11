@@ -14,10 +14,12 @@ Linux.
 ## Technical Requirements
 
 * [Jetway](https://github.com/miguelvelezmj25/Jetway)
-    This is a forked repo from Christian Kästner. It is mainly used to communicate 
+  
+  This is a forked repo from Christian Kästner and adapted for this project. It is mainly used to communicate 
 with a database. 
 
 * [Fabric](http://www.fabfile.org/) (Optional. Install in master machine)
+  
   This command-line tool is installed and used in the master machine for streamlining 
 the use of SSH for application deployment or systems administration tasks. It is
 used to send jobs and manage the machines that execute the experiments
@@ -30,7 +32,7 @@ if you run your experiments headless.
 
 * sshpass (Required. Install in TurtleBot machine)
 
-    This Linux utility allows to run ssh using the mode referred to as "keyboard-interactive" 
+  This Linux utility allows to run ssh using the mode referred to as "keyboard-interactive" 
 password authentication, but in non-interactive mode. This is used in a bash scripts
 to initialize and terminate processes for the gazebo simulator in order machines. You 
 can install it by typing:
@@ -38,13 +40,15 @@ can install it by typing:
         sudo apt-get install sshpass
 
 * mpstat (Required. Install in TurtleBot machine)
-Part of Sysstat. This Linux command writes to standard output activities for each available processor.
+
+  Part of Sysstat. This Linux command writes to standard output activities for each available processor.
 It is used to measure CPU utilization of an entire machine. You can install it by typing:
  
         sudo apt-get install sysstat
 
 * Xorg dummy driver (Required to run the simulator headless. Install in  Simulator machine)
-This driver allows to run the simulator headless. You can install it by typing:
+
+  This driver allows to run the simulator headless. You can install it by typing:
  
         sudo apt-get install xserver-xorg-video-dummy
 
@@ -52,11 +56,12 @@ This driver allows to run the simulator headless. You can install it by typing:
 ## Additional Files
 
 The following files contain sensitive data that is unique to each individual who uses this
-reppo. Therefore, they are not provided in this repo and must be installed in the machines running
+repo. Therefore, they are not provided in this repo and must be installed in the machines running
 the TurtleBot and Simulator. 
 
 * .dbconfig
-This file is used to connect to the database that stores the jobs and saves the data from
+  
+  This file is used to connect to the database that stores the jobs and saves the data from
 the executions. It must have the following structure:
 
         [section]
@@ -66,7 +71,8 @@ the executions. It must have the following structure:
         database = database
 
 * .serverconfig
-This file is used to configure the communication between the TurtleBot and Simulator machines.
+
+  This file is used to configure the communication between the TurtleBot and Simulator machines.
 It mus have the following structure:
 
         [section]
