@@ -47,8 +47,8 @@ def scan_callback(data):
 
 
 if __name__ == '__main__':
-    laser_miscalibration = 'laser_miscalibration'
-    laser_noise = 'laser_noise'
+    kinect_miscalibration = 'kinect_miscalibration'
+    kinect_noise = 'kinect_noise'
 
     if len(sys.argv) == 1:
         args = "{}"
@@ -57,11 +57,11 @@ if __name__ == '__main__':
 
     configurations = ast.literal_eval(args)
 
-    if laser_miscalibration in configurations:
-        gamma = configurations[laser_miscalibration]
+    if kinect_miscalibration in configurations:
+        gamma = configurations[kinect_miscalibration]
 
-    if laser_noise in configurations:
-        delta = configurations[laser_noise]
+    if kinect_noise in configurations:
+        delta = configurations[kinect_noise]
 
     rospy.init_node('scan_monitor')
     rospy.Subscriber('/scan', LaserScan, scan_callback, queue_size=QUEUE_CAPACITY)
