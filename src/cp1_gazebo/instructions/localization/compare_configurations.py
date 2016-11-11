@@ -154,9 +154,9 @@ def compare_configuration(configuration, min, max):
     subprocess.call('Rscript ' + compare_configurations_r_script + r_arguments, shell=True)
 
 
-def compare_particle_filter_parameters():
+def compare_particle_filter_configurations():
     """
-    compare_particle_filter_parameters()
+    compare_particle_filter_configurations()
 
     Graph configurations compare the default values to the minimum and maximum values
     """
@@ -164,9 +164,9 @@ def compare_particle_filter_parameters():
         compare_configuration(configuration[0], configuration[2], configuration[3])
 
 
-def compare_laser_parameters():
+def compare_laser_configurations():
     """
-    compare_laser_parameters()
+    compare_laser_configurations()
 
     Graph configurations compare the default values to the minimum and maximum values
     """
@@ -174,17 +174,19 @@ def compare_laser_parameters():
         compare_configuration(configuration[0], configuration[2], configuration[3])
 
 
-def compare_environment_parameters():
+def compare_environment_configurations():
     """
+    compare_environment_configurations()
 
+    Graph configurations compare the default values to the minimum and maximum values
     """
     for configuration in configurations.environment_parameters:
         compare_configuration(configuration[0], configuration[2], configuration[3])
 
 
-def graph_particle_filter_parameters():
+def graph_particle_filter_configurations():
     """
-    graph_particle_filter_parameters()
+    graph_particle_filter_configurations()
 
     Graph all options of all the configurations in the particle filter that are worth exploring
     """
@@ -193,9 +195,9 @@ def graph_particle_filter_parameters():
         graph_configuration_options(option, default)
 
 
-def graph_laser_parameters():
+def graph_laser_configurations():
     """
-    graph_laser_parameters()
+    graph_laser_configurations()
 
     Graph all options of all the configurations in the laser that are worth exploring
     """
@@ -204,9 +206,9 @@ def graph_laser_parameters():
         graph_configuration_options(option, default)
 
 
-def graph_environment_parameters():
+def graph_environment_configurations():
     """
-    graph_environment_parameters()
+    graph_environment_configurations()
 
     """
     for configuration in configurations.environment_parameters_to_explore:
@@ -214,9 +216,9 @@ def graph_environment_parameters():
         graph_configuration_options(configuration, default)
 
 
-def graph_particle_filter_parameters_combine():
+def graph_particle_filter_configurations_combine():
     """
-    graph_particle_filter_parameters_combine()
+    graph_particle_filter_configurations_combine()
 
     Graph all options of all the combine configurations in the particle filter that are worth exploring
     """
