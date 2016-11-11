@@ -28,7 +28,7 @@ used to send jobs and manage the machines that execute the experiments
 
   This project contains a collection of fabfiles used along side Fabric to manage and
 send jobs to multiple machines. This project contains files needed in the simulator machine
-if you run your experiments headless.
+if you run your experiments headless. It also contains scripts for running the experiments.
 
 * sshpass (Required. Install in TurtleBot machine)
 
@@ -136,4 +136,8 @@ jobs to do. The following is the DDL from the database currently used.
     );
     CREATE INDEX measurements_configurations_id_fk ON measurements (configuration_id);
     CREATE INDEX measurements_nfps_id_fk ON measurements (nfp_id);
-    
+       
+## Running Experiments
+
+TODO. The [Fabfiles](https://github.com/miguelvelezmj25/fabfiles) repo contains scripts
+and information to run the experiments.
