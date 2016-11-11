@@ -13,6 +13,16 @@ Linux.
 
 ## Technical Requirements
 
+* [ROS Indigo](http://wiki.ros.org/indigo/Installation/Ubuntu) (Required. Install in TurtleBot 
+and Simulator machines)
+
+  This is the version of ROS used for the experiments.
+
+* [TurtleBot Indigo](http://wiki.ros.org/turtlebot/Tutorials/indigo/Turtlebot%20Installation) (Required. 
+Install in TurtleBot and Simulator machines)
+
+  This is the TurtleBot simulator for the Indigo version of ROS.
+
 * [Jetway](https://github.com/miguelvelezmj25/Jetway)
   
   This is a forked repo from Christian Kästner and adapted for this project. It is mainly used to communicate 
