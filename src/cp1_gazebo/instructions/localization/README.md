@@ -14,21 +14,23 @@ Linux.
 ## Technical Requirements
 
 * [Jetway](https://github.com/miguelvelezmj25/Jetway)
-This is a forked repo from Christian Kästner. It is mainly used to communicate 
+    This is a forked repo from Christian Kästner. It is mainly used to communicate 
 with a database. 
 
 * [Fabric](http://www.fabfile.org/) (Optional. Install in master machine)
-This command-line tool is installed and used in the master machine for streamlining 
+  This command-line tool is installed and used in the master machine for streamlining 
 the use of SSH for application deployment or systems administration tasks. It is
 used to send jobs and manage the machines that execute the experiments
 
 * [Fabfiles](https://github.com/miguelvelezmj25/fabfiles) (Optional. Clone in master machine)
-This project contains a collection of fabfiles used along side Fabric to manage and
+
+  This project contains a collection of fabfiles used along side Fabric to manage and
 send jobs to multiple machines. This project contains files needed in the simulator machine
 if you run your experiments headless.
 
 * sshpass (Required. Install in TurtleBot machine)
-This Linux utility allows to run ssh using the mode referred to as "keyboard-interactive" 
+
+    This Linux utility allows to run ssh using the mode referred to as "keyboard-interactive" 
 password authentication, but in non-interactive mode. This is used in a bash scripts
 to initialize and terminate processes for the gazebo simulator in order machines. You 
 can install it by typing:
