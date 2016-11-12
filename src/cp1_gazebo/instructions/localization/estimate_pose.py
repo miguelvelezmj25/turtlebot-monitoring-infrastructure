@@ -24,7 +24,7 @@ def amcl_pose_callback(data, file):
 
 
 if __name__ == '__main__':
-    rospy.init_node('ground_truth_pose_monitor', anonymous=True)
+    rospy.init_node(ESTIMATE_POSE, anonymous=True)
 
     amcl_current_time = 0
     monitor_file = open(monitors.DATA_FOLDER + ESTIMATE_POSE + '.txt', "w", 0)

@@ -6,7 +6,7 @@ import commands
 
 from geometry_msgs.msg import PoseArray
 
-AMCL_CPU_MONITOR = 'amcl_cpu_monitor'
+LOCALIZATION_CPU_MONITOR = 'localization_cpu_monitor'
 AMCL_CPU_MONITOR_COMMAND = "pidstat -t -C amcl 1 1 | grep -o .*-..amcl | sed 's/ *- *amcl//' | grep -o '......$'"
 
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     rospy.init_node('ground_truth_pose_monitor', anonymous=True)
 
     amcl_cpu_current_time = 0
-    monitor_file = open(monitors.DATA_FOLDER + AMCL_CPU_MONITOR + '.txt', "w", 0)
+    monitor_file = open(monitors.DATA_FOLDER + LOCALIZATION_CPU_MONITOR + '.txt', "w", 0)
     rospy.Subscriber("/particlecloud", PoseArray, callback=particlecloud_proxy_for_amcl_cpu_callback,
                      callback_args=monitor_file, queue_size=1)
     rospy.spin()

@@ -192,7 +192,7 @@ getting that data
 * mean_cpu_utilization --> cpu_monitor.py
 * mean_localization_error --> ground_truth_pose.py and estimate_pose.py
 * time (This metric is not measure with a monitor file. Rather it is calculated from the simulator.)
-* mean_amcl_cpu_utilization --> amcl_cpu_monitor.py
+* mean_amcl_cpu_utilization --> localization_cpu_monitor.py
 
 ## Measuring Other Metrics 
 

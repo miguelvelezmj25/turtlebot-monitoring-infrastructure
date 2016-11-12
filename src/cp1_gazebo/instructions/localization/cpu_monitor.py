@@ -27,7 +27,7 @@ def clock_proxy_for_cpu_callback(data, file):
 
 
 if __name__ == '__main__':
-    rospy.init_node('ground_truth_pose_monitor', anonymous=True)
+    rospy.init_node(CPU_MONITOR, anonymous=True)
 
     cpu_current_time = 0
     monitor_file = open(monitors.DATA_FOLDER + CPU_MONITOR + '.txt', "w", 0)

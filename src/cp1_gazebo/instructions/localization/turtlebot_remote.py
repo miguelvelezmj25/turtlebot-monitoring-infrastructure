@@ -31,7 +31,7 @@ DURATION = 'duration'
 GROUND_TRUTH_POSE = 'ground_truth_pose'
 ESTIMATE_POSE = 'estimate_pose'
 CPU_MONITOR = 'cpu_monitor'
-AMCL_CPU_MONITOR = 'amcl_cpu_monitor'
+LOCALIZATION_CPU_MONITOR = 'localization_cpu_monitor'
 MOVE_BASE_CPU_MONITOR = 'move_base_cpu_monitor'
 
 
@@ -139,7 +139,6 @@ def measure(id, configurations):
                     y_position = re.search(y_position_regex, entry)
                     value = re.search(value_regex, entry)
 
-                    # TODO Might need to change to float if we are going to get data all the time
                     data_point = [float(duration.group(0))]
 
                     if value is not None:

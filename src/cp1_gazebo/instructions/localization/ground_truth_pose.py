@@ -24,7 +24,7 @@ def gazebo_model_states_callback(data, file):
 
 
 if __name__ == '__main__':
-    rospy.init_node('ground_truth_pose_monitor', anonymous=True)
+    rospy.init_node(GROUND_TRUTH_POSE, anonymous=True)
 
     gazebo_current_time = 0
     monitor_file = open(monitors.DATA_FOLDER + GROUND_TRUTH_POSE + '.txt', "w", 0)

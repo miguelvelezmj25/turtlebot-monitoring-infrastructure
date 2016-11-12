@@ -191,13 +191,13 @@ def run(id, configurations):
         measurements = turtlebot_remote.measure(id, configurations)
     except SystemError as error:
         duration = MAX_RUN_TIME
-        measurements[turtlebot_remote.DURATION] = duration
-        measurements[turtlebot_remote.GROUND_TRUTH_POSE] = turtlebot_remote.gazebo_pose_data
-        measurements[turtlebot_remote.ESTIMATE_POSE] = turtlebot_remote.amcl_pose_data
-        measurements[turtlebot_remote.RESULT] = turtlebot_remote.FAIL
-        measurements[turtlebot_remote.CPU_MONITOR] = turtlebot_remote.cpu_monitor_data
-        measurements[turtlebot_remote.AMCL_CPU_MONITOR] = turtlebot_remote.amcl_cpu_monitor_data
-        measurements[turtlebot_remote.MOVE_BASE_CPU_MONITOR] = turtlebot_remote.move_base_cpu_monitor_data
+        # measurements[turtlebot_remote.DURATION] = duration
+        # measurements[turtlebot_remote.GROUND_TRUTH_POSE] = turtlebot_remote.gazebo_pose_data
+        # measurements[turtlebot_remote.ESTIMATE_POSE] = turtlebot_remote.amcl_pose_data
+        # measurements[turtlebot_remote.RESULT] = turtlebot_remote.FAIL
+        # measurements[turtlebot_remote.CPU_MONITOR] = turtlebot_remote.cpu_monitor_data
+        # measurements[turtlebot_remote.LOCALIZATION_CPU_MONITOR] = turtlebot_remote.amcl_cpu_monitor_data
+        # measurements[turtlebot_remote.MOVE_BASE_CPU_MONITOR] = turtlebot_remote.move_base_cpu_monitor_data
     finally:
         signal.alarm(0)
 
@@ -271,7 +271,7 @@ def measure(id, environment_configurations, amcl_configurations):
 
     # TODO These nfps should match the db
     get_cpu_utilization(id, 'mean_cpu_utilization', measurements[turtlebot_remote.CPU_MONITOR], time_range)
-    get_cpu_utilization(id, 'mean_amcl_cpu_utilization', measurements[turtlebot_remote.AMCL_CPU_MONITOR], time_range)
+    get_cpu_utilization(id, 'mean_amcl_cpu_utilization', measurements[turtlebot_remote.LOCALIZATION_CPU_MONITOR], time_range)
 
 
 signal.signal(signal.SIGALRM, signal_handler)

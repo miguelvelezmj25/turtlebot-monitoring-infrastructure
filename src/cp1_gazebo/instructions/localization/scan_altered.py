@@ -63,6 +63,6 @@ if __name__ == '__main__':
     if kinect_noise in configurations:
         delta = configurations[kinect_noise]
 
-    rospy.init_node('scan_monitor')
+    rospy.init_node('scan_altered')
     rospy.Subscriber('/scan', LaserScan, scan_callback, queue_size=QUEUE_CAPACITY)
     rospy.spin()
