@@ -6,6 +6,7 @@ import os
 
 DATA_FOLDER = 'monitor_data/'
 MONITORS_FILE = 'monitors_file.txt'
+MONITORS_CONFIG = '.monitorsconfig'
 
 
 def cleanup_files():
@@ -32,8 +33,9 @@ if __name__ == '__main__':
     if not os.path.exists(DATA_FOLDER):
         os.mkdir(DATA_FOLDER)
 
-    # TODO make this read from a config file
-    monitors = ['ground_truth_pose.py', 'estimate_pose.py', 'amcl_cpu_monitor.py', 'cpu_monitor.py']
+    # TODO have not tested if this works with cpp
+    with open(MONITORS_CONFIG, 'r', 0) as monitor_config:
+        monitors = monitor_config.read().splitlines()
 
     all_monitors_file = open(DATA_FOLDER + MONITORS_FILE, "w", 0)
 
@@ -43,6 +45,6 @@ if __name__ == '__main__':
     all_monitors_file.close()
 
     for monitor in monitors:
-        subprocess.Popen('python ' + monitor, shell=True)
+        subprocess.Popen("rosrun cp1_gazebo " + monitor, shell=True)
 
     rospy.spin()
