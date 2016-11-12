@@ -87,6 +87,8 @@ def add_combine_configurations_to_explore(db, configurations, values):
 
 def add_configurations_to_explore(db, configurations, values):
     mdb.startup(db)
+    servers_1 = [server for server in servers[:4]]
+    servers_2 = [server for server in servers[4:]]
 
     i = 0
     while i < len(configurations):
@@ -100,8 +102,8 @@ def add_configurations_to_explore(db, configurations, values):
             else:
                 id = mdb.add_configuration(option)
 
-            mdb.add_todo(id, 10, worker=servers[0])
-            mdb.add_todo(id, 10, worker=servers[1])
+            mdb.add_todo(id, 10, worker=servers_1[2])
+            mdb.add_todo(id, 10, worker=servers_1[3])
             # for server in servers:
             #     mdb.add_todo(id, 5, worker=server)
 
@@ -146,8 +148,8 @@ def add_min_and_max_configurations(db, options, iterations=5):
 
         # mdb.add_todo(id, iterations, worker=servers_1[i % len(servers_1)])
         # mdb.add_todo(id, iterations, worker=servers_2[i % len(servers_2)])
-        mdb.add_todo(id, iterations, worker=servers_1[0])
-        mdb.add_todo(id, iterations, worker=servers_1[1])
+        mdb.add_todo(id, iterations, worker=servers_1[2])
+        mdb.add_todo(id, iterations, worker=servers_1[3])
 
         configuration = str(options[i][0]) + ' ' + str(options[i][-1])
         existing_id = mdb.select_ids('from configurations where options = "{0}"'.format(configuration))
@@ -159,8 +161,8 @@ def add_min_and_max_configurations(db, options, iterations=5):
 
         # mdb.add_todo(id, iterations, worker=servers_1[i % len(servers_1)])
         # mdb.add_todo(id, iterations, worker=servers_2[i % len(servers_2)])
-        mdb.add_todo(id, iterations, worker=servers_1[0])
-        mdb.add_todo(id, iterations, worker=servers_1[1])
+        mdb.add_todo(id, iterations, worker=servers_1[2])
+        mdb.add_todo(id, iterations, worker=servers_1[3])
 
         i += 1
 
