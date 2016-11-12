@@ -66,15 +66,16 @@ It is used to measure CPU utilization of an entire machine. You can install it b
 ## Additional Files
 
 The following files contain sensitive data that is unique to each individual who uses this
-repo. Therefore, they are not provided in this repo and must be installed in the machines running
-the TurtleBot and Simulator. 
+repo. Therefore, they are not provided in this repo and must be copied in the machines running
+the TurtleBot and Simulator. You can use the [Fabfiles](https://github.com/miguelvelezmj25/fabfiles) 
+project to copy them. 
 
 * .dbconfig
   
   This file is used to connect to the database that stores the jobs and saves the data from
 the executions. It must have the following structure:
 
-        [section]
+        [server]
         hostname = hostname
         user = user
         password = password
@@ -85,11 +86,18 @@ the executions. It must have the following structure:
   This file is used to configure the communication between the TurtleBot and Simulator machines.
 It mus have the following structure:
 
-        [section]
-        simulator = simulator
+        [serverX]
+        simulator = serverY
         username = username
         password = password
-
+  
+  This means that ```serverX``` will act as the TurtleBot machine and will communicate with ```serverY```
+  to run the simulator in that machine. **WARNING: Machines cannot run TurtleBot code and the simulator
+  at the same time**.
+  
+There are additional files needed to run the simulator headless. More information can be found in 
+the [Fabfiles](https://github.com/miguelvelezmj25/fabfiles) repo.
+  
 ## Database
 
 This project requires a database to store the configurations of TurtleBot, the time
@@ -149,5 +157,49 @@ jobs to do. The following is the DDL from the database currently used.
        
 ## Running Experiments
 
-TODO. The [Fabfiles](https://github.com/miguelvelezmj25/fabfiles) repo contains scripts
-and information to run the experiments.
+The following instructions are the ones we followed to get the infrastructure cloned and ready 
+to run experiments. You can use a different approach besides Fabric to set up and update the infrastructure.
+However, you must execute and follow the same logic that the scripts that use the fabfiles execute. You have
+to check the [Fabfiles](https://github.com/miguelvelezmj25/fabfiles) repo for instructions on how to
+complete some of the following steps.
+
+1. Install and clone the require software, files, and projects in your master machine and your servers. The
+[Fabfiles](https://github.com/miguelvelezmj25/fabfiles) project must be cloned in your master machine. 
+This project must be cloned and setup in your servers. You can do so by running
+
+        clone_infrastructure.sh {hosts} {password}
+        set_bash_profile.sh {hosts} {password}
+
+from the master machine. They will setup this project, the necessary files used by it, and the ```.bash_profile``` in your servers. 
+Remember that you must provide the ```.dbconfig``` and ```.serverconfig``` files in your 
+[Fabfiles](https://github.com/miguelvelezmj25/fabfiles) project to be copied to your servers.
+2. Run the headless server in your server machines. 
+3. Add configurations and jobs to the database.
+4. Execute the experiment you stored in the database. You can do so by running
+
+    run_experiments.sh {hosts} {password} {iterations}
+        
+from the master machine.
+
+## Metrics
+
+This is the list of the current metrics we are measuring are and the associated subscribers 
+getting that data
+
+* mean_cpu_utilization --> cpu_monitor.py
+* mean_localization_error --> ground_truth_pose.py and estimate_pose.py
+* time (This metric is not measure with a monitor file. Rather it is calculated from the simulator.)
+* mean_amcl_cpu_utilization --> amcl_cpu_monitor.py
+
+## Measuring Other Metrics 
+
+The ```.monitors``` file contains the files that subscribe to a ROS topic and get data. If you want to measure 
+more metrics, you need to add the files with the subscribers in this file. It is recommended to use only one 
+subscriber per files. It is also adviced to not have multiple subscribers subcribed to one topic since the 
+messages will be distributed to all subscribers and each subscriber will only get a subset of all the messages. 
+If your subscriber is written in Python, you need to make that file executable and include the extension in the 
+```.monitos``` files. If your subscriber is written in C++, you need add the file name with the extension as an
+executable in the ```CMakelLists``` like
+    
+    add_executable({node_name} {path_to_file_with_extension})
+    target_link_libraries({node_name} ${catkin_LIBRARIES})
