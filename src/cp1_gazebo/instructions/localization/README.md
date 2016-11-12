@@ -170,16 +170,19 @@ This project must be cloned and setup in your servers. You can do so by running
         clone_infrastructure.sh {hosts} {password}
         set_bash_profile.sh {hosts} {password}
 
-from the master machine. They will setup this project, the necessary files used by it, and the ```.bash_profile``` in your servers. 
-Remember that you must provide the ```.dbconfig``` and ```.serverconfig``` files in your 
-[Fabfiles](https://github.com/miguelvelezmj25/fabfiles) project to be copied to your servers.
+  from the master machine. They will setup this project, the necessary files used by it, and the ```.bash_profile``` in your servers. 
+  Remember that you must provide the ```.dbconfig``` and ```.serverconfig``` files in your 
+  [Fabfiles](https://github.com/miguelvelezmj25/fabfiles) project to be copied to your servers.
+
 2. Run the headless server in your server machines. 
+
 3. Add configurations and jobs to the database.
+
 4. Execute the experiment you stored in the database. You can do so by running
 
-    run_experiments.sh {hosts} {password} {iterations}
+        run_experiments.sh {hosts} {password} {iterations}
         
-from the master machine.
+  from the master machine.
 
 ## Metrics
 
