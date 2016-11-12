@@ -196,7 +196,7 @@ getting that data
 
 ## Measuring Other Metrics 
 
-The ```.monitors``` file contains the files that subscribe to a ROS topic and get data. If you want to measure 
+The ```.monitorsconfig``` file contains the files that subscribe to a ROS topic and get data. If you want to measure 
 more metrics, you need to add the files with the subscribers in this file. It is recommended to use only one 
 subscriber per files. It is also adviced to not have multiple subscribers subcribed to one topic since the 
 messages will be distributed to all subscribers and each subscriber will only get a subset of all the messages. 
