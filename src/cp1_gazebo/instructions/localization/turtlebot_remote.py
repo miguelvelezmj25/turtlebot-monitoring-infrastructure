@@ -50,7 +50,7 @@ def startup(environment_configurations):
                      stdout=turtlebot_log_error)
     time.sleep(7)
 
-    subprocess.Popen("./start_remote_gazebo.sh " + str(remote_host) + ' ' + str(remote_password) + ' '
+    subprocess.Popen("./start_remote_altered_data.sh " + str(remote_host) + ' ' + str(remote_password) + ' '
                      + SCAN_ALTERED + ' "' + str(environment_configurations) + '"', shell=True,
                      stderr=turtlebot_log_error, stdout=turtlebot_log_error)
     time.sleep(7)
