@@ -51,7 +51,7 @@
         <param name="save_pose_rate"            value="0.5"/>
         <param name="laser_min_range"           value=" -1.0"/>
         <param name="tf_broadcast"              value="true"/>
-        <!-- <remap from="scan"                      to="$(arg scan_topic)"/> -->
-        <remap from="scan"                      to="scan_altered"/>
+         <remap from="scan"                      to="$(arg scan_topic)"/>
+        <!--<remap from="scan"                      to="scan_altered"/>-->
     </node>
 </launch>
