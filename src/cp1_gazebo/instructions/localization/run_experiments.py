@@ -216,7 +216,7 @@ def filter_environment_configurations(configurations):
 
     for configuration in load_configurations.environment_parameters:
         if configurations.has_key(configuration[0]):
-            settings[configuration] = configurations.pop(configuration[0])
+            settings[configuration[0]] = configurations.pop(configuration[0])
 
     return settings
 
