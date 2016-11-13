@@ -102,8 +102,8 @@ def add_configurations_to_explore(db, configurations, values):
             else:
                 id = mdb.add_configuration(option)
 
-            mdb.add_todo(id, 10, worker=servers_1[2])
-            mdb.add_todo(id, 10, worker=servers_1[3])
+            mdb.add_todo(id, 10, worker=servers_1[0])
+            mdb.add_todo(id, 10, worker=servers_1[1])
             # for server in servers:
             #     mdb.add_todo(id, 5, worker=server)
 
@@ -148,8 +148,8 @@ def add_min_and_max_configurations(db, options, iterations=5):
 
         # mdb.add_todo(id, iterations, worker=servers_1[i % len(servers_1)])
         # mdb.add_todo(id, iterations, worker=servers_2[i % len(servers_2)])
-        mdb.add_todo(id, iterations, worker=servers_1[2])
-        mdb.add_todo(id, iterations, worker=servers_1[3])
+        mdb.add_todo(id, iterations, worker=servers_1[0])
+        mdb.add_todo(id, iterations, worker=servers_1[1])
 
         configuration = str(options[i][0]) + ' ' + str(options[i][-1])
         existing_id = mdb.select_ids('from configurations where options = "{0}"'.format(configuration))
@@ -161,8 +161,8 @@ def add_min_and_max_configurations(db, options, iterations=5):
 
         # mdb.add_todo(id, iterations, worker=servers_1[i % len(servers_1)])
         # mdb.add_todo(id, iterations, worker=servers_2[i % len(servers_2)])
-        mdb.add_todo(id, iterations, worker=servers_1[2])
-        mdb.add_todo(id, iterations, worker=servers_1[3])
+        mdb.add_todo(id, iterations, worker=servers_1[0])
+        mdb.add_todo(id, iterations, worker=servers_1[1])
 
         i += 1
 
@@ -230,9 +230,12 @@ amcl_parameters_not_in_website = ['beam_skip_distance', 'beam_skip_threshold', '
                                   'do_beamskip']
 
 
-environment_parameters = [('kinect_miscalibration', 0, -0.5, 0.5), ('kinect_noise', 0, 0, 1.0)]
+environment_parameters = [('kinect_miscalibration', 0, -0.7, 0.7), ('kinect_noise', 0, 0, 1.0)]
 environment_parameters_to_explore = ['kinect_miscalibration', 'kinect_noise']
 environment_parameters_to_explore_values = [[-0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5,
                                              0.6, 0.7],
                                             [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
                                             ]
+
+# add_min_and_max_configurations(turtlebot_explore_db, environment_parameters)
+# add_configurations_to_explore(turtlebot_explore_db, environment_parameters_to_explore, environment_parameters_to_explore_values)

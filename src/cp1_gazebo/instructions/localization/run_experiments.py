@@ -6,6 +6,7 @@ import signal
 import math
 import socket
 import jetway.mdb as mdb
+import load_configurations
 
 config_parser = ConfigParser.RawConfigParser()
 config_file_path = r'.serverconfig'
@@ -15,7 +16,6 @@ remote_host = config_parser.get(socket.gethostname(), 'simulator')
 MAX_RUN_TIME = 100
 MAX_EXPERIMENT_TIME = 300
 navigation_configuration = {'target_x': 7, 'target_y': -10.5}
-environment_configurations = ['laser_miscalibration', 'laser_noise', 'odometry_miscalibration', 'odometry_noise']
 
 
 def signal_handler(signum, frame):
@@ -214,9 +214,9 @@ def filter_environment_configurations(configurations):
     """
     settings = {}
 
-    for configuration in environment_configurations:
-        if configurations.has_key(configuration):
-            settings[configuration] = configurations.pop(configuration)
+    for configuration in load_configurations.environment_parameters:
+        if configurations.has_key(configuration[0]):
+            settings[configuration] = configurations.pop(configuration[0])
 
     return settings
 
