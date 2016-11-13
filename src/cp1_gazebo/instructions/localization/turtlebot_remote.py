@@ -25,7 +25,7 @@ FAIL = 'fail'
 RESULT = 'result'
 NODE_NAME = 'turtlebot_remote'
 NAVIGATION = 'map_navigation.py'
-MONITOR_SCAN = 'scan_altered.py'
+SCAN_ALTERED = 'scan_altered.py'
 MONITORS_FILE = 'monitors.py'
 DURATION = 'duration'
 GROUND_TRUTH_POSE = 'ground_truth_pose'
@@ -50,7 +50,8 @@ def startup(environment_configurations):
                      stdout=turtlebot_log_error)
     time.sleep(7)
 
-    subprocess.Popen("rosrun cp1_gazebo " + MONITOR_SCAN + ' "' + str(environment_configurations) + '"', shell=True,
+    subprocess.Popen("./start_remote_gazebo.sh " + str(remote_host) + ' ' + str(remote_password) + ' '
+                     + SCAN_ALTERED + ' "' + str(environment_configurations) + '"', shell=True,
                      stderr=turtlebot_log_error, stdout=turtlebot_log_error)
     time.sleep(7)
 
