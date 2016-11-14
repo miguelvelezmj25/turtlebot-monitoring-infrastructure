@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# For this script to work, we remapped scan to scan_altered in the amcl node
+
 import sys
 import ast
 import numpy
@@ -29,18 +31,15 @@ def scan_callback(data):
         for value in data.ranges:
             new_value = numpy.random.normal(value * (1 + gamma), value * delta)
             new_values.append(new_value)
-
-        data.ranges = new_values
     elif delta > 0:
         for value in data.ranges:
             new_value = numpy.random.normal(value, value * delta)
             new_values.append(new_value)
-
-        data.ranges = new_values
     elif gamma != 0:
         for value in data.ranges:
             new_values.append(value * (1 + gamma))
 
+    if delta > 0 or gamma > 0:
         data.ranges = new_values
 
     publisher.publish(data)
