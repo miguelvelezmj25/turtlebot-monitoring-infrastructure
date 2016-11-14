@@ -7,4 +7,4 @@ password=$2
 file=$3
 configuration=$4
 
-sshpass -p ${password} ssh -X ${simulator} ". ~/.bash_profile; $HOME/catkin_ws/src/cp1_gazebo/instructions/localization/start_altered_data.sh "${file} ${configuration}
+sshpass -p ${password} ssh -X ${simulator} ". ~/.bash_profile; $HOME/catkin_ws/src/cp1_gazebo/instructions/localization/start_altered_data.sh "${file} '"'${configuration}'"'
