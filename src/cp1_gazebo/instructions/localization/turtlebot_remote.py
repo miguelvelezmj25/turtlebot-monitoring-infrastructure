@@ -26,6 +26,7 @@ RESULT = 'result'
 NODE_NAME = 'turtlebot_remote'
 NAVIGATION = 'map_navigation.py'
 SCAN_ALTERED = 'scan_altered.py'
+TF_ALTERED = 'tf_altered.py'
 MONITORS_FILE = 'monitors.py'
 DURATION = 'duration'
 GROUND_TRUTH_POSE = 'ground_truth_pose'
@@ -52,6 +53,9 @@ def startup(environment_configurations):
 
     subprocess.Popen("./start_remote_altered_data.sh " + str(remote_host) + ' ' + str(remote_password) + ' '
                      + SCAN_ALTERED + ' "' + str(environment_configurations) + '"', shell=True,
+                     stderr=turtlebot_log_error, stdout=turtlebot_log_error)
+    subprocess.Popen("./start_remote_altered_data.sh " + str(remote_host) + ' ' + str(remote_password) + ' '
+                     + TF_ALTERED + ' "' + str(environment_configurations) + '"', shell=True,
                      stderr=turtlebot_log_error, stdout=turtlebot_log_error)
     time.sleep(7)
 
