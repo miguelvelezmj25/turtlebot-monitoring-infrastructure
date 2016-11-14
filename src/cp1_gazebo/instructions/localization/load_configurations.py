@@ -205,7 +205,7 @@ laser_parameters_combine = [('laser_min_range', -1.0, 1.0, 1000.0), ('laser_max_
 laser_parameters_string = [('laser_model_type', "'likelihood_field'")]
 
 laser_parameters_to_explore = ['laser_max_beams', 'laser_z_hit', 'laser_z_short', 'laser_z_max', 'laser_z_rand',
-                               'laser_sigma_hit', 'laser_lambda_short', 'laser_likelihood_max_dist'
+                               'laser_sigma_hit', 'laser_likelihood_max_dist'
                                ]
 laser_parameters_to_explore_values = [[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
                                       [0.1, 0.95, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
@@ -213,7 +213,6 @@ laser_parameters_to_explore_values = [[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 10
                                       [0.01, 0.05, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
                                       [0.01, 0.05, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
                                       [0.1, 0.2, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                      [0.01, 0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
                                       [0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 15.0, 20.0]
                                       ]
 
@@ -236,6 +235,3 @@ environment_parameters_to_explore_values = [[-0.7, -0.6, -0.5, -0.4, -0.3, -0.2,
                                              0.6, 0.7],
                                             [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
                                             ]
-
-# add_min_and_max_configurations(turtlebot_explore_db, environment_parameters)
-# add_configurations_to_explore(turtlebot_explore_db, environment_parameters_to_explore, environment_parameters_to_explore_values)
