@@ -48,7 +48,7 @@ def odom_callback(data):
     rotation = (data.pose.pose.orientation.x, data.pose.pose.orientation.y, data.pose.pose.orientation.z,
                 data.pose.pose.orientation.w)
     ros_time = rospy.Time(data.header.stamp.secs, data.header.stamp.nsecs)
-    child = data.child_frame.id
+    child = data.child_frame_id
     parent = data.header.frame_id
 
     broadcaster.sendTransform(translation, rotation, ros_time, child, parent)
