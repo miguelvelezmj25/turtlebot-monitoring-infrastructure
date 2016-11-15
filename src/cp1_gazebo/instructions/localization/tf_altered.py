@@ -55,8 +55,8 @@ def odom_callback(data):
 
 
 if __name__ == '__main__':
-    odom_miscalibration = 'odom_miscalibration'
-    odom_noise = 'odom_noise'
+    odometry_miscalibration = 'odometry_miscalibration'
+    odometry_noise = 'odometry_noise'
 
     if len(sys.argv) == 1:
         args = "{}"
@@ -65,11 +65,11 @@ if __name__ == '__main__':
 
     configurations = ast.literal_eval(args)
 
-    if odom_miscalibration in configurations:
-        gamma = configurations[odom_miscalibration]
+    if odometry_miscalibration in configurations:
+        gamma = configurations[odometry_miscalibration]
 
-    if odom_noise in configurations:
-        delta = configurations[odom_noise]
+    if odometry_noise in configurations:
+        delta = configurations[odometry_noise]
 
     rospy.init_node('tf_altered')
     rospy.Subscriber('/odom', Odometry, odom_callback, queue_size=QUEUE_CAPACITY)
