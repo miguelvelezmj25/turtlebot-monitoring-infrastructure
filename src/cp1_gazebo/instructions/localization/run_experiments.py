@@ -34,8 +34,16 @@ def get_cpu_utilization(id, nfp, utilization_data, time_range):
     cpu_data = utilization_data[:]
     filter_data(cpu_data)
 
-    start_item = [item for item in cpu_data if item[0] == time_range[0]][0]
-    end_item = [item for item in cpu_data if item[0] == time_range[1]][0]
+    try:
+        start_item = [item for item in cpu_data if item[0] == time_range[0]][0]
+    except IndexError, ie:
+        start_item = cpu_data[0]
+
+    try:
+        end_item = [item for item in cpu_data if item[0] == time_range[1]][0]
+    except IndexError, ie:
+        end_item = cpu_data[-1]
+
     cpu_data = cpu_data[cpu_data.index(start_item):cpu_data.index(end_item)+1]
 
     nfp_id = mdb.get_nfp_id(nfp)
