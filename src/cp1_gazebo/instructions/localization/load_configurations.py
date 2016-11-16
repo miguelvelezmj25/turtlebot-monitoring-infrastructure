@@ -175,7 +175,7 @@ filter_parameters = [('kld_err', 0.01, 0.0, 1.0), ('kld_z', 0.99, 0.0, 1.0), ('u
                      ('recovery_alpha_fast', 0.0, 0.0, 1.0), ('gui_publish_rate', -1.0, 10.0, 100.0),
                      ('save_pose_rate', 0.5, 0.0, 10.0)
                      ]
-filter_parameters_combine = [('min_particles', 100, 5, 1000), ('max_particles', 5000, 5, 10000)]
+filter_parameters_combine = [['particles', ('min_particles', 100, 5, 1000), ('max_particles', 5000, 5, 1000)]] # max_particles -> max = 10000
 filter_parameters_boolean = [('use_map_topic', False)]
 
 

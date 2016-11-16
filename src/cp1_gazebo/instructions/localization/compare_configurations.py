@@ -95,7 +95,7 @@ def graph_configuration_options(configuration, default=None, id_option_tuples=No
         subprocess.call('Rscript ' + graph_configuration_options_r_script + r_arguments, shell=True)
 
 
-def compare_configuration(configuration, min, max):
+def compare_configuration(configuration, min, max, name=None):
     """
     compare_configuration(configuration)
 
@@ -137,7 +137,12 @@ def compare_configuration(configuration, min, max):
         for configuration_id in configuration_ids:
             files.append(nfp + '_' + configuration_id + file_extension)
 
-    r_arguments = configuration + ' '
+    if name is None:
+        r_arguments = configuration
+    else:
+        r_arguments = name
+
+    r_arguments += ' '
 
     for server in servers:
         r_arguments += server
@@ -158,7 +163,7 @@ def compare_particle_filter_configurations():
     """
     compare_particle_filter_configurations()
 
-    Graph configurations compare the default values to the minimum and maximum values
+    Graph configurations to compare the default values to the minimum and maximum values
     """
     for configuration in configurations.filter_parameters:
         compare_configuration(configuration[0], configuration[2], configuration[3])
@@ -168,7 +173,7 @@ def compare_laser_configurations():
     """
     compare_laser_configurations()
 
-    Graph configurations compare the default values to the minimum and maximum values
+    Graph configurations to compare the default values to the minimum and maximum values
     """
     for configuration in configurations.laser_parameters:
         compare_configuration(configuration[0], configuration[2], configuration[3])
@@ -178,10 +183,38 @@ def compare_environment_configurations():
     """
     compare_environment_configurations()
 
-    Graph configurations compare the default values to the minimum and maximum values
+    Graph configurations to compare the default values to the minimum and maximum values
     """
     for configuration in configurations.environment_parameters:
         compare_configuration(configuration[0], configuration[2], configuration[3])
+
+
+def compare_particle_filter_configurations_combine():
+    """
+    compare_particle_filter_configurations_combine()
+
+    Graph combine configurations to compare the default values to the minimum and maximum values
+    """
+    mdb.startup(turtlebot_explore_db)
+
+    for options in configurations.filter_parameters_combine:
+        name = options[0]
+        options = options[1:]
+        parameter = options[0][0]
+        min = str(options[0][2]) + ', '
+        for option in options[1:]:
+            min += option[0] + ' ' + str(option[2]) + ', '
+
+        min = min[:-2]
+
+        max = str(options[0][3]) + ', '
+        for option in options[1:]:
+            max += option[0] + ' ' + str(option[3]) + ', '
+
+        max = max[:-2]
+        compare_configuration(parameter, min, max, name)
+
+    mdb.shutdown()
 
 
 def graph_particle_filter_configurations():
