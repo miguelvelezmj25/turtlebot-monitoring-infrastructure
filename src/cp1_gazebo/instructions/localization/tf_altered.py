@@ -30,20 +30,22 @@ def odom_callback(data):
 
     if delta > 0 and gamma > 0:
         # This is an interaction between two configurations
-        translation = (numpy.random.normal(data.pose.pose.position.x * (1 + gamma), data.pose.pose.position.x * delta),
-                       numpy.random.normal(data.pose.pose.position.y * (1 + gamma), data.pose.pose.position.y * delta),
-                       numpy.random.normal(data.pose.pose.position.z * (1 + gamma), data.pose.pose.position.z * delta))
+        translation = [numpy.random.normal(data.pose.pose.position.x * (1 + gamma), data.pose.pose.position.x * delta),
+                       numpy.random.normal(data.pose.pose.position.y * (1 + gamma), data.pose.pose.position.y * delta)]
     elif delta > 0:
-        translation = (numpy.random.normal(data.pose.pose.position.x, data.pose.pose.position.x * delta),
-                       numpy.random.normal(data.pose.pose.position.y, data.pose.pose.position.y * delta),
-                       numpy.random.normal(data.pose.pose.position.z, data.pose.pose.position.z * delta))
+        try:
+            translation = [numpy.random.normal(data.pose.pose.position.x, data.pose.pose.position.x * delta),
+                           numpy.random.normal(data.pose.pose.position.y, data.pose.pose.position.y * delta)]
+        except ValueError, ve:
+            translation = [data.pose.pose.position.x, data.pose.pose.position.y]
     elif gamma != 0:
-        translation = (data.pose.pose.position.x * (1 + gamma),
-                       data.pose.pose.position.y * (1 + gamma),
-                       data.pose.pose.position.z * (1 + gamma))
+        translation = [data.pose.pose.position.x * (1 + gamma),
+                       data.pose.pose.position.y * (1 + gamma)]
     else:
-        translation = (data.pose.pose.position.x, data.pose.pose.position.y, data.pose.pose.position.z)
+        translation = [data.pose.pose.position.x, data.pose.pose.position.y]
 
+    translation.append(data.pose.pose.position.z)
+    translation = tuple(translation)
     # TODO should we add noise and miscalibration to this?
     rotation = (data.pose.pose.orientation.x, data.pose.pose.orientation.y, data.pose.pose.orientation.z,
                 data.pose.pose.orientation.w)
