@@ -56,7 +56,7 @@ while (server <= length(servers))
     quartz()
     x = c()
     y = c()
-    sd = c()
+    e = c()
     server_name = servers[server]
     i = 1
     while (i <= length(files))
@@ -65,10 +65,22 @@ while (server <= length(servers))
         data = read.csv(paste(data_folder, files[i], sep=''))
         data = as.data.frame(data)
         data = data[[as.character(server_name)]]
-        data = replace(data, data>36, NA)
+        data = replace(data, data>=99, NA)
         x[i] <- options[i]
         y[i] <- mean(data, na.rm=TRUE)
-        sd[i] <- sd(data, na.rm=TRUE)
+
+        n <- sum(!is.na(data))
+
+        if(n <= 1) {
+            e[i]=0
+        }
+        else {
+            sd <- sd(data, na.rm=TRUE)
+            se = sd/sqrt(n)
+            e[i] = qt(.995, df=n-1) * se
+        }
+
+
         i = i + 1
     }
 
@@ -77,8 +89,8 @@ while (server <= length(servers))
     i = 1
     while (i <= length(y))
     {
-        y_total_max[i] <- y[i] + sd[i]
-        y_total_min[i] <- y[i] - sd[i]
+        y_total_max[i] <- y[i] + e[i]
+        y_total_min[i] <- y[i] - e[i]
         i = i + 1
     }
 
@@ -97,7 +109,7 @@ while (server <= length(servers))
 #    plot(x, y, pch=19, xlab="option", ylab="value", xlim=c(x[1], x[y_length]))
     title(paste(option, '_', nfp, '_', server_name, sep=''))
     lines(x, y)
-    arrows(x, y-sd, x, y+sd, length=0.05, angle=90, code=3)
+    arrows(x, y-e, x, y+e, length=0.05, angle=90, code=3)
 
     if(!default == 'NA')
     {
