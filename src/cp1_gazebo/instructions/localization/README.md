@@ -104,56 +104,100 @@ This project requires a database to store the configurations of TurtleBot, the t
 series and summary measurements, the non-functional properties to be measured, and
 jobs to do. The following is the DDL from the database currently used.
 
-    CREATE TABLE nfps
-    (
-        id INT(11) unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
-        name VARCHAR(300) DEFAULT '' NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-    );
-    CREATE TABLE todos
-    (
-        configuration_id VARCHAR(36) DEFAULT '' NOT NULL,
-        iterations INT(11) NOT NULL,
-        worker VARCHAR(100) DEFAULT '' NOT NULL,
-        priority INT(11),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-        CONSTRAINT `PRIMARY` PRIMARY KEY (configuration_id, worker),
-        CONSTRAINT todos_configurations_id_fk FOREIGN KEY (configuration_id) REFERENCES configurations (id)
-    );
-    CREATE TABLE configurations
-    (
-        id VARCHAR(36) PRIMARY KEY NOT NULL,
-        options VARCHAR(760) DEFAULT '' NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-    );
-    CREATE UNIQUE INDEX configurations_options_uindex ON configurations (options);
-    CREATE TABLE measurements_verbose
-    (
-        configuration_id VARCHAR(36) DEFAULT '' NOT NULL,
-        simulator VARCHAR(30) DEFAULT '' NOT NULL,
-        host VARCHAR(30) DEFAULT '' NOT NULL,
-        nfp_id INT(11) unsigned NOT NULL,
-        value VARCHAR(20) DEFAULT '' NOT NULL,
-        time VARCHAR(20) DEFAULT '' NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-        CONSTRAINT measurements_verbose_configurations_id_fk FOREIGN KEY (configuration_id) REFERENCES configurations (id),
-        CONSTRAINT measurements_verbose_nfps_id_fk FOREIGN KEY (nfp_id) REFERENCES nfps (id)
-    );
-    CREATE INDEX measurements_verbose_configurations_id_fk ON measurements_verbose (configuration_id);
-    CREATE INDEX measurements_verbose_nfps_id_fk ON measurements_verbose (nfp_id);
-    CREATE TABLE measurements
-    (
-        configuration_id VARCHAR(36) DEFAULT '' NOT NULL,
-        simulator VARCHAR(30) DEFAULT '' NOT NULL,
-        host VARCHAR(30) DEFAULT '' NOT NULL,
-        nfp_id INT(11) unsigned NOT NULL,
-        value VARCHAR(20),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-        CONSTRAINT measurements_configurations_id_fk FOREIGN KEY (configuration_id) REFERENCES configurations (id),
-        CONSTRAINT measurements_nfps_id_fk FOREIGN KEY (nfp_id) REFERENCES nfps (id)
-    );
-    CREATE INDEX measurements_configurations_id_fk ON measurements (configuration_id);
-    CREATE INDEX measurements_nfps_id_fk ON measurements (nfp_id);
+    # Dump of table configurations
+    # ------------------------------------------------------------
+    
+    DROP TABLE IF EXISTS `configurations`;
+    
+    CREATE TABLE `configurations` (
+      `id` varchar(36) NOT NULL DEFAULT '',
+      `options` varchar(760) NOT NULL DEFAULT '',
+      `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `configurations_options_uindex` (`options`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    
+    
+    DELIMITER ;;
+    /*!50003 SET SESSION SQL_MODE="" */;;
+    /*!50003 CREATE */ /*!50017 DEFINER=`turtlebot`@`%` */ /*!50003 TRIGGER `configurations_default_uuid` BEFORE INSERT ON `configurations` FOR EACH ROW begin
+    if NEW.id is null OR NEW.id = '' then
+    set NEW.id=UUID();
+    end if;
+    end */;;
+    DELIMITER ;
+    /*!50003 SET SESSION SQL_MODE=@OLD_SQL_MODE */;
+    
+    
+    # Dump of table measurements
+    # ------------------------------------------------------------
+    
+    DROP TABLE IF EXISTS `measurements`;
+    
+    CREATE TABLE `measurements` (
+      `configuration_id` varchar(36) NOT NULL DEFAULT '',
+      `simulator` varchar(30) NOT NULL DEFAULT '',
+      `host` varchar(30) NOT NULL DEFAULT '',
+      `nfp_id` int(11) unsigned NOT NULL,
+      `value` varchar(20) DEFAULT '-1',
+      `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      KEY `measurements_configurations_id_fk` (`configuration_id`),
+      KEY `measurements_nfps_id_fk` (`nfp_id`),
+      CONSTRAINT `measurements_configurations_id_fk` FOREIGN KEY (`configuration_id`) REFERENCES `configurations` (`id`),
+      CONSTRAINT `measurements_nfps_id_fk` FOREIGN KEY (`nfp_id`) REFERENCES `nfps` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    
+    
+    
+    # Dump of table measurements_verbose
+    # ------------------------------------------------------------
+    
+    DROP TABLE IF EXISTS `measurements_verbose`;
+    
+    CREATE TABLE `measurements_verbose` (
+      `configuration_id` varchar(36) NOT NULL DEFAULT '',
+      `simulator` varchar(30) NOT NULL DEFAULT '',
+      `host` varchar(30) NOT NULL DEFAULT '',
+      `nfp_id` int(11) unsigned NOT NULL,
+      `value` varchar(20) NOT NULL DEFAULT '',
+      `time` varchar(20) NOT NULL DEFAULT '',
+      `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      KEY `measurements_verbose_configurations_id_fk` (`configuration_id`),
+      KEY `measurements_verbose_nfps_id_fk` (`nfp_id`),
+      CONSTRAINT `measurements_verbose_configurations_id_fk` FOREIGN KEY (`configuration_id`) REFERENCES `configurations` (`id`),
+      CONSTRAINT `measurements_verbose_nfps_id_fk` FOREIGN KEY (`nfp_id`) REFERENCES `nfps` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    
+    
+    
+    # Dump of table nfps
+    # ------------------------------------------------------------
+    
+    DROP TABLE IF EXISTS `nfps`;
+    
+    CREATE TABLE `nfps` (
+      `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+      `name` varchar(300) NOT NULL DEFAULT '',
+      `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    
+    
+    
+    # Dump of table todos
+    # ------------------------------------------------------------
+    
+    DROP TABLE IF EXISTS `todos`;
+    
+    CREATE TABLE `todos` (
+      `configuration_id` varchar(36) NOT NULL DEFAULT '',
+      `iterations` int(11) NOT NULL,
+      `worker` varchar(100) NOT NULL DEFAULT '',
+      `priority` int(11) DEFAULT NULL,
+      `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (`configuration_id`,`worker`),
+      CONSTRAINT `todos_configurations_id_fk` FOREIGN KEY (`configuration_id`) REFERENCES `configurations` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
        
 ## Running Experiments
 
@@ -198,7 +242,7 @@ getting that data
 
 The ```.monitorsconfig``` file contains the files that subscribe to a ROS topic and get data. If you want to measure 
 more metrics, you need to add the files with the subscribers in this file. It is recommended to use only one 
-subscriber per files. It is also adviced to not have multiple subscribers subcribed to one topic since the 
+subscriber per files. It is also adviced to not have multiple subscribers subscribed to one topic since the 
 messages will be distributed to all subscribers and each subscriber will only get a subset of all the messages. 
 If your subscriber is written in Python, you need to make that file executable and include the extension in the 
 ```.monitos``` files. If your subscriber is written in C++, you need add the file name with the extension as an
