@@ -240,3 +240,6 @@ environment_parameters_to_explore_values = [[-0.7, -0.6, -0.5, -0.4, -0.3, -0.2,
                                              0.6, 0.7],
                                             [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
                                             ]
+
+custom_configurations = ['min_particles 5, max_particles 5, resample_interval 20',
+                         'min_particles 1000, max_particles 1000, resample_interval 1']

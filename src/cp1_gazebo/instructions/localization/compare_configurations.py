@@ -95,27 +95,15 @@ def graph_configuration_options(configuration, default=None, id_option_tuples=No
         subprocess.call('Rscript ' + graph_configuration_options_r_script + r_arguments, shell=True)
 
 
-def compare_configuration(configuration, min, max, name=None):
+def compare_configurations(nfps, configuration_ids, name):
     """
-    compare_configuration(configuration)
+    compare_configurations(nfps, configuration_ids, name)
 
-    :param max:
-    :param min:
-    :param configuration:
+    :param nfps:
+    :param configuration_ids:
+    :param name:
+    :return:
     """
-    mdb.startup(turtlebot_explore_db)
-    nfps_tuple = mdb.exec_sql('select name from nfps')
-
-    nfps = []
-    for nfp in nfps_tuple:
-        nfps.append(str(nfp[0]))
-
-    configuration_ids = [str(mdb.exec_sql('select id from configurations where options '
-                                          'like "{} {}"'.format(configuration, min))[0][0]),
-                         str(mdb.exec_sql('select id from configurations where options '
-                                          'like "{} {}"'.format(configuration, max))[0][0])]
-
-    mdb.shutdown()
     files = []
 
     for nfp in nfps:
@@ -137,12 +125,7 @@ def compare_configuration(configuration, min, max, name=None):
         for configuration_id in configuration_ids:
             files.append(nfp + '_' + configuration_id + file_extension)
 
-    if name is None:
-        r_arguments = configuration
-    else:
-        r_arguments = name
-
-    r_arguments += ' '
+    r_arguments = name + ' '
 
     for server in servers:
         r_arguments += server
@@ -157,6 +140,59 @@ def compare_configuration(configuration, min, max, name=None):
     r_arguments = r_arguments[:-1]
 
     subprocess.call('Rscript ' + compare_configurations_r_script + r_arguments, shell=True)
+
+
+def compare_configuration(configuration, min, max, name=None):
+    """
+    compare_configuration(configuration)
+
+    :param name:
+    :param max:
+    :param min:
+    :param configuration:
+    """
+    mdb.startup(turtlebot_explore_db)
+    nfps_tuple = mdb.exec_sql('select name from nfps')
+
+    nfps = []
+    for nfp in nfps_tuple:
+        nfps.append(str(nfp[0]))
+
+    configuration_ids = [str(mdb.exec_sql('select id from configurations where options '
+                                          'like "{} {}"'.format(configuration, min))[0][0]),
+                         str(mdb.exec_sql('select id from configurations where options '
+                                          'like "{} {}"'.format(configuration, max))[0][0])]
+
+    mdb.shutdown()
+
+    if name is None:
+        name = configuration
+
+    compare_configurations(nfps, configuration_ids, name)
+
+
+def compare_custom_configuration(configuration_1, configuration_2, name):
+    """
+    compare_configuration(configuration)
+
+    :param name:
+    :param configuration_2:
+    :param configuration_1:
+    """
+    mdb.startup(turtlebot_explore_db)
+    nfps_tuple = mdb.exec_sql('select name from nfps')
+
+    nfps = []
+    for nfp in nfps_tuple:
+        nfps.append(str(nfp[0]))
+
+    configuration_ids = [str(mdb.exec_sql('select id from configurations where options '
+                                          ' = "{}"'.format(configuration_1))[0][0]),
+                         str(mdb.exec_sql('select id from configurations where options '
+                                          ' = "{}"'.format(configuration_2))[0][0])]
+
+    mdb.shutdown()
+    compare_configurations(nfps, configuration_ids, name)
 
 
 def compare_particle_filter_configurations():
