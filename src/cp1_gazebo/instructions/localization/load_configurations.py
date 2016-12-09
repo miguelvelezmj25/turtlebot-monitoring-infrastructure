@@ -204,19 +204,6 @@ laser_parameters = [('laser_max_beams', 30, 1, 100), ('laser_z_hit', 0.95, 0.1, 
 laser_parameters_combine = [('laser_min_range', -1.0, 1.0, 1000.0), ('laser_max_range', -1.0, 1.0, 1000.0)]
 laser_parameters_string = [('laser_model_type', "'likelihood_field'")]
 
-laser_parameters_to_explore = ['laser_max_beams', 'laser_z_hit', 'laser_z_short', 'laser_z_max', 'laser_z_rand',
-                               'laser_sigma_hit', 'laser_likelihood_max_dist'
-                               ]
-laser_parameters_to_explore_values = [[1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-                                      [0.1, 0.95, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                      [0.01, 0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                      [0.01, 0.05, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                      [0.01, 0.05, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                      [0.1, 0.2, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
-                                      [0.1, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 15.0, 20.0]
-                                      ]
-
-
 odometry_parameters = [('odom_alpha1', 0.2, 0.1, 10.0), ('odom_alpha2', 0.2, 0.1, 10.0), ('odom_alpha3', 0.2, 0.1, 10.0),
                        ('odom_alpha4', 0.2, 0.1, 10.0), ('odom_alpha5', 0.2, 0.1, 10.0)
                        ]
