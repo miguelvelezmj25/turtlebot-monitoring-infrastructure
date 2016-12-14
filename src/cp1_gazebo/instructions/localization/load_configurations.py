@@ -131,6 +131,39 @@ def add_configuration(db, configuration, workers=None, priority=None, iterations
     mdb.shutdown()
 
 
+def add_pair_wise_configurations(db, pair_wise_configurations, pair_wise_values):
+    mdb.startup(db)
+    servers_1 = [server for server in servers[:4]]
+    servers_2 = [server for server in servers[4:]]
+
+    i = 0
+    while i < len(pair_wise_configurations):
+        configurations = pair_wise_configurations[i]
+        configurations_values = pair_wise_values[i]
+
+        for x in configurations_values[0]:
+            option = configurations[0] + ' ' + str(x) + ', '
+
+            for y in configurations_values[1]:
+                if y < x:
+                    continue
+
+                hold = option + configurations[1] + ' ' + str(y)
+
+                existing_id = mdb.select_ids('from configurations where options = "{0}"'.format(hold))
+
+                if len(existing_id) > 0:
+                    id = existing_id[0]
+                else:
+                    id = mdb.add_configuration(hold)
+
+                mdb.add_todo(id, 6, worker=servers_1[0])
+                mdb.add_todo(id, 6, worker=servers_1[1])
+
+        i += 1
+
+    mdb.shutdown()
+
 def add_min_and_max_configurations(db, options, iterations=5):
     mdb.startup(db)
     servers_1 = [server for server in servers[:4]]
@@ -230,3 +263,8 @@ environment_parameters_to_explore_values = [[-0.7, -0.6, -0.5, -0.4, -0.3, -0.2,
 
 custom_configurations = ['min_particles 5, max_particles 5, resample_interval 20',
                          'min_particles 1000, max_particles 1000, resample_interval 1']
+
+pair_wise_configurations = [('min_particles', 'max_particles')]
+pair_wise_configurations_values = [[(5, 10, 20, 30, 40, 50, 70, 100, 125, 150, 200, 250, 300, 350, 400, 450, 500, 750,
+                                     1000), (5, 10, 20, 30, 40, 50, 70, 100, 125, 150, 200, 250, 300, 350, 400, 450,
+                                             500, 750, 1000, 1500, 2000, 3500, 5000, 7500, 10000)]]
