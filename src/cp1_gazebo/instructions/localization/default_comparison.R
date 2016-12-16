@@ -15,9 +15,9 @@ for (i in 1:length(default_data_files)) {
 
     columns = colnames(matrix)
 
-    png(file = paste(plot_folder, 'default_options_file', default_data_files[i], '.png', sep=''), width=1100,height=1100,res=150)
+    png(file = paste(plot_folder, 'default_configurations_', default_data_files[i], '.png', sep=''), width=1100,height=1100,res=150)
     boxplot(matrix, use.col=TRUE, las=2)
-    title(default_data_files[i])
+    title(paste('default_configurations_', default_data_files[i], sep=''))
     means = c()
     for (j in 1:length(columns)) {
         server = as.character(columns[j])

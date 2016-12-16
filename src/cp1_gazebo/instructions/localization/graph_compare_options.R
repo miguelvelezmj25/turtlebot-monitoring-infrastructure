@@ -76,7 +76,7 @@ while (i < length(files))
 
     png(file = paste(plot_folder, option, '_comparison_', nfp, '.png', sep=''))
     boxplot(comparison_matrix, use.col=TRUE, las=2)
-    title(nfp)
+    title(paste(option, '_', nfp, sep=''))
     columns = colnames(comparison_matrix)
 
     means = c()
