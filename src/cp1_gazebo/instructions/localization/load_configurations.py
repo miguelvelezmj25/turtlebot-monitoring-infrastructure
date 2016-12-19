@@ -12,7 +12,7 @@ servers = ['feature3.andrew.cmu.edu', 'feature6.andrew.cmu.edu', 'feature8.andre
 # The likelihood_field model uses only 2: z_hit and z_rand.
 
 
-def add_default_configuration(db):
+def add_default_configuration(db, workers=None, priority=None, iterations=30):
     mdb.startup(db)
 
     configuration = ''
@@ -20,8 +20,10 @@ def add_default_configuration(db):
     for option in filter_parameters:
         configuration += str(option[0]) + ' ' + str(option[1]) + ', '
 
-    for option in filter_parameters_combine:
-        configuration += str(option[0]) + ' ' + str(option[1]) + ', '
+    for options in filter_parameters_combine:
+        options = options[1:]
+        for element in options:
+            configuration += str(element[0]) + ' ' + str(element[1]) + ', '
 
     for option in filter_parameters_boolean:
         configuration += str(option[0]) + ' ' + str(option[1]) + ', '
@@ -52,13 +54,16 @@ def add_default_configuration(db):
     else:
         id = mdb.add_configuration(configuration)
 
-    # 9 servers * 40 times
-    mdb.add_todo(id, 360)
+    if workers is None:
+        mdb.add_todo(id, iterations, priority=priority)
+    else:
+        for worker in workers:
+            mdb.add_todo(id, iterations, worker=worker, priority=priority)
 
     mdb.shutdown()
 
 
-def add_combine_configurations_to_explore(db, configurations, values):
+def add_combine_configurations_to_explore(db, configurations, values, workers=None, priority=None, iterations=6):
     mdb.startup(db)
 
     i = 0
@@ -68,18 +73,7 @@ def add_combine_configurations_to_explore(db, configurations, values):
 
         for option_value in value:
             option = configuration[1] + ' ' + str(option_value) + ', ' + configuration[2] + ' ' + str(option_value)
-            existing_id = mdb.select_ids('from configurations where options = "{0}"'.format(option))
-
-            if len(existing_id) > 0:
-                id = existing_id[0]
-            else:
-                id = mdb.add_configuration(option)
-
-            # for server in servers:
-            #     # 9 servers * 5 times each
-            #     mdb.add_todo(id, 5, worker=server)
-            mdb.add_todo(id, 10, worker=servers[0])
-            mdb.add_todo(id, 10, worker=servers[1])
+            add_configuration(db, option, workers=workers, priority=priority, iterations=iterations)
 
         i += 1
 
@@ -176,17 +170,17 @@ filter_parameters_to_explore = ['recovery_alpha_slow', 'update_min_d', 'update_m
                                 'resample_interval', 'transform_tolerance'
                                 ]
 filter_parameters_to_explore_values = [[0.0, 0.1, 0.2, 0.3, 0.4, 0.5],
-                                       [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0,
-                                        3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4, 4.6, 4.8, 5.0],
-                                       [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.28318],
-                                       [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5,
-                                        8.0, 8.5, 9.0, 9.5, 10.0],
-                                       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+                                       [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 2.0, 3.0, 4.0, 5.0],
+                                       [0.0, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 6.28318],
+                                       [0.0, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0],
+                                       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
                                        [0.0, 0.1, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0]
                                        ]
 filter_parameters_combine_to_explore = [('particles', 'min_particles', 'max_particles')]
-filter_parameters_combine_to_explore_values = [[5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700,
-                                                800, 900, 1000]]
+filter_parameters_combine_to_explore_values = [[5, 10, 20, 30, 40, 50, 70, 100, 125, 150, 200, 250, 300, 350, 400, 450,
+                                                500, 750, 1000]
+                                              ]
+
 
 laser_parameters = [('laser_max_beams', 30, 1, 100), ('laser_z_hit', 0.95, 0.1, 10.0),
                     ('laser_z_short', 0.1, 0.01, 10.0),
