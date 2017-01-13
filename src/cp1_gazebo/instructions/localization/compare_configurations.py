@@ -304,6 +304,15 @@ def graph_particle_filter_configurations_combine():
         tuples = mdb.exec_sql('select id, options from configurations where options like "{0}%" '
                               'and options not like "{0}%,%" ORDER BY options'.format(combine_option))
 
+        analyze = []
+        for tuple in tuples:
+            element = tuple[1].split(',')
+            element_1 = element[0].strip()
+            element_2 = element[1].strip()
+
+            if element_1.split(' ')[-1] == element_2.split(' ')[-1]:
+                analyze.append(tuple)
+
         graph_configuration_options(name, id_option_tuples=tuples)
 
     mdb.shutdown()
