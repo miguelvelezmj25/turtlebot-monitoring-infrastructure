@@ -7,7 +7,10 @@ import commands
 from rosgraph_msgs.msg import Clock
 
 CPU_MONITOR = 'cpu_monitor'
+# mpstat gives the CPU consumption based on the entire CPU. We need to multiply it by the number of cores to get a
+# measurement per CPU.
 CPU_MONITOR_COMMAND = "mpstat 1 1 | grep -o M..all........ | sed -e 's/M  all   //'"
+CORES_NUMBER = 4
 
 
 def clock_proxy_for_cpu_callback(data, file):
@@ -23,7 +26,7 @@ def clock_proxy_for_cpu_callback(data, file):
     value = commands.getstatusoutput(CPU_MONITOR_COMMAND)[1]
 
     if len(value) > 0:
-        file.write("time: {} | value: {}\n".format(cpu_current_time, float(value)))
+        file.write("time: {} | value: {}\n".format(cpu_current_time, float(value) * CORES_NUMBER))
 
 
 if __name__ == '__main__':
