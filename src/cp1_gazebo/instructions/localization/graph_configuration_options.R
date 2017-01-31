@@ -65,7 +65,11 @@ while (server <= length(servers))
         data = read.csv(paste(data_folder, files[i], sep=''))
         data = as.data.frame(data)
         data = data[[as.character(server_name)]]
-        data = replace(data, data>=99, NA)
+
+        if(nfp != "mean_cpu_utilization") {
+            data = replace(data, data>=99, NA)
+        }
+
         x[i] <- options[i]
         y[i] <- mean(data, na.rm=TRUE)
 

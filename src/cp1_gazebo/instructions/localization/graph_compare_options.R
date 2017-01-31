@@ -69,10 +69,12 @@ while (i < length(files))
     comparison_matrix = cbind.fill(min, default_data_files)
     comparison_matrix = cbind.fill(comparison_matrix, max)
 
-    invalid_data_indices = comparison_matrix > 36
-    comparison_matrix[invalid_data_indices] = NA
-
     nfp = files[1 + i]
+
+    if(nfp != "mean_cpu_utilization") {
+        invalid_data_indices = comparison_matrix > 36
+        comparison_matrix[invalid_data_indices] = NA
+    }
 
     png(file = paste(plot_folder, option, '_comparison_', nfp, '.png', sep=''))
     boxplot(comparison_matrix, use.col=TRUE, las=2)
