@@ -1,3 +1,4 @@
 [submodule "src/cp1_gazebo/instructions/localization/jetway_package"]
 	path = src/cp1_gazebo/instructions/localization/jetway_package
 	url = git@github.com:miguelvelezmj25/Jetway.git
+    branch = master
