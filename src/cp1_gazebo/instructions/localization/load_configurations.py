@@ -4313,8 +4313,8 @@ custom_configurations = ['min_particles 5, max_particles 5, resample_interval 20
                          'kinect_array 640, transform_tolerance 2.0'
                          ]
 
-for configuration in custom_configurations[:2000]:
-    add_configuration(turtlebot_explore_db, configuration, servers[:2])
-
-for configuration in custom_configurations[2000:]:
-    add_configuration(turtlebot_explore_db, configuration, servers[2:4])
+# for configuration in custom_configurations[:2000]:
+#     add_configuration(turtlebot_explore_db, configuration, servers[:2])
+#
+# for configuration in custom_configurations[2000:]:
+#     add_configuration(turtlebot_explore_db, configuration, servers[2:4])
