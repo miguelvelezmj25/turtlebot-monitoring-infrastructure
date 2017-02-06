@@ -11,6 +11,7 @@ do
     killall -q roslaunch roscore rosrun
     pkill -f ros
     counter=$(( $counter + 1 ))
+    echo "Experiments left" $(( $iterations - $counter + 1 ))
 done
 
 # Since the setup.sh script added a line for ROS_MASTER_UR in .bash_profile,
