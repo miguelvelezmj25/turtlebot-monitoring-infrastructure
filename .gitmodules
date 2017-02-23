@@ -1,0 +1,4 @@
+[submodule "src/measurement/localization/jetway_package"]
+	path = src/measurement/localization/jetway_package
+	url = git@github.com:miguelvelezmj25/Jetway.git
+	branch = master

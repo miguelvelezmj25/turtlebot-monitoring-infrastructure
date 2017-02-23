@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>cp1_gazebo</name>
+  <name>measurement</name>
   <version>0.0.0</version>
-  <description>The cp1_gazebo package</description>
+  <description>The measurement package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
