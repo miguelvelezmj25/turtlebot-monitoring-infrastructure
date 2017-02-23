@@ -45,6 +45,6 @@ if __name__ == '__main__':
     all_monitors_file.close()
 
     for monitor in monitors:
-        subprocess.Popen("rosrun cp1_gazebo " + monitor, shell=True)
+        subprocess.Popen("rosrun measurement " + monitor, shell=True)
 
     rospy.spin()

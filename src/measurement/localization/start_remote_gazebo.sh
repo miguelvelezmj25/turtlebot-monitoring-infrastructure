@@ -5,4 +5,4 @@
 simulator=$1
 password=$2
 
-sshpass -p ${password} ssh -X ${simulator} ". ~/.bash_profile; $HOME/catkin_ws/src/cp1_gazebo/instructions/localization/start_gazebo.sh"
+sshpass -p ${password} ssh -X ${simulator} ". ~/.bash_profile; $HOME/catkin_ws/src/measurement/localization/start_gazebo.sh"

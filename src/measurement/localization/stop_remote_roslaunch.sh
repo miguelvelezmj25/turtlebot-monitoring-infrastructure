@@ -5,4 +5,4 @@
 simulator=$1
 password=$2
 
-sshpass -p ${password} ssh -X ${simulator} ". ~/.bash_profile; $HOME/catkin_ws/src/cp1_gazebo/instructions/localization/stop_roslaunch.sh"
+sshpass -p ${password} ssh -X ${simulator} ". ~/.bash_profile; $HOME/catkin_ws/src/measurement/localization/stop_roslaunch.sh"

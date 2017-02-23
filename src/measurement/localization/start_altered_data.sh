@@ -5,4 +5,4 @@ file=$1
 configuration=$2
 
 source $HOME/.bashrc
-rosrun cp1_gazebo ${file} "${configuration}"
+rosrun measurement ${file} "${configuration}"

@@ -47,7 +47,7 @@ def startup(environment_configurations):
 
     global turtlebot_log_error
     turtlebot_log_error = open('log/turtlebot_remote.log', 'a+', 0)
-    subprocess.Popen("roslaunch cp1_gazebo robot-altered.launch", shell=True, stderr=turtlebot_log_error,
+    subprocess.Popen("roslaunch measurement robot-altered.launch", shell=True, stderr=turtlebot_log_error,
                      stdout=turtlebot_log_error)
     time.sleep(7)
 

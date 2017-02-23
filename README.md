@@ -2,9 +2,9 @@
 
 Project to study performance and behavior of TurtleBot.
 
-The folder where the most work has been done is ```src/cp1_gazebo```.  The monitoring scripts 
-are under ```/src/cp1_gazebo/instructions/localization```. See 
-[localization README.md](/src/cp1_gazebo/instructions/localization/) for more information 
+The folder where the most work has been done is ```src/measurement```.  The monitoring scripts 
+are under ```/src/measurement/localization```. See 
+[localization README.md](/src/measurement/localization/) for more information 
 about the infrastructure and how to run the experiments.
 
 To execute the launch files in this repo, first run ```catkin_make``` in the root folder of this repo
