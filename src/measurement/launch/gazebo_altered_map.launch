@@ -1,0 +1,22 @@
+<!-- Launch file for challenge problem 1 -->
+<!-- TODO:
+      - Take out hardwired paths
+      - Check to make sure that the custom_param_file is working (and that the parameters are set)
+      - Check to see if the map maze and gazebo maze are aligned 
+-->
+<launch>
+  <!-- This is the map file that will be used for planning -->
+  <arg name="map_file" value="$(find cp1_gazebo)/maps/wean4.yaml"/>
+
+
+  <!-- Start the gazebo world, so that obstacles can be mapped -->
+  <!-- NOTE: The maze in the world might not be needed if the map server is required -->
+  <include file="$(find cp1_gazebo)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find cp1_gazebo)/worlds/Wean4.world"/>
+    <arg name="gui" value="false"/>
+    <!--  <arg name="headless" value="true"/> -->
+  </include>
+
+  <!-- start the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
+</launch>
