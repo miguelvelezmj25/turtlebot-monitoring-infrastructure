@@ -11,16 +11,16 @@
   <arg name="stacks" value="$(optenv TURTLEBOT_STACKS circles)"/>
   <!-- The param file is turning off various navigation options on move_base to
        hamper the navigation -->
-  <arg name="custom_param_file" value="$(find measurements)/param/move_base_params.yaml"/>
+  <arg name="custom_param_file" value="$(find measurement)/param/move_base_params.yaml"/>
 
   <!-- This is the map file that will be used for planning -->
-  <arg name="map_file" value="$(find measurements)/maps/wean4.yaml"/>
+  <arg name="map_file" value="$(find measurement)/maps/wean4.yaml"/>
 
 
   <!-- Start the gazebo world, so that obstacles can be mapped -->
   <!-- NOTE: The maze in the world might not be needed if the map server is required -->
-  <include file="$(find measurements)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find measurements)/worlds/Wean4.world"/>
+  <include file="$(find measurement)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find measurement)/worlds/Wean4.world"/>
     <arg name="gui" value="false"/>
     <arg name="headless" value="true"/>
   </include>
@@ -54,7 +54,7 @@
   <arg name="initial_pose_x" default="0.0"/> 
   <arg name="initial_pose_y" default="0.0"/> 
   <arg name="initial_pose_a" default="0.0"/>
-  <include file="$(find measurements)/launch/includes/amcl.launch.xml">
+  <include file="$(find measurement)/launch/includes/amcl.launch.xml">
     <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
     <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
     <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
@@ -68,7 +68,7 @@
   <!-- Launch instruction graph, with initial instruction files -->
 <!--
   <node name="ig_interpreter" pkg="ig_interpreter" type="ig_node" output="screen">
-    <param name="ig_file" value="$(find measurements)/instructions/hometogoal.ig"/>
+    <param name="ig_file" value="$(find measurement)/instructions/hometogoal.ig"/>
   </node>
 -->
   <!-- launch node to report the state of the robot -->

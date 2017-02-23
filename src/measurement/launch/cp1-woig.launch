@@ -11,16 +11,16 @@
   <arg name="stacks" value="$(optenv TURTLEBOT_STACKS circles)"/>
   <!-- The param file is turning off various navigation options on move_base to
        hamper the navigation -->
-  <arg name="custom_param_file" value="$(find measurements)/param/move_base_params.yaml"/>
+  <arg name="custom_param_file" value="$(find measurement)/param/move_base_params.yaml"/>
 
   <!-- This is the map file that will be used for planning -->
-  <arg name="map_file" value="$(find measurements)/maps/maze2.yaml"/>
+  <arg name="map_file" value="$(find measurement)/maps/maze2.yaml"/>
 
 
   <!-- Start the gazebo world, so that obstacles can be mapped -->
   <!-- NOTE: The maze in the world might not be needed if the map server is required -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <!--<arg name="world_name" value="$(find measurements)/worlds/cp1.world"/>-->
+    <!--<arg name="world_name" value="$(find measurement)/worlds/cp1.world"/>-->
 <!-- -->
     <arg name="gui" value="false"/>
     <arg name="headless" value="true"/>
@@ -71,7 +71,7 @@
   <!-- Launch instruction graph, with initial instruction files -->
 
   <node name="ig_interpreter" pkg="ig_interpreter" type="ig_node" output="screen">
-    <param name="ig_file" value="$(find measurements)/instructions/fullnav.ig"/>
+    <param name="ig_file" value="$(find measurement)/instructions/fullnav.ig"/>
   </node>
 
   <!-- launch node to report the state of the robot -->
