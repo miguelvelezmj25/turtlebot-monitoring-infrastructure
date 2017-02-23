@@ -4319,5 +4319,3 @@ custom_configurations = ['min_particles 5, max_particles 5, resample_interval 20
 # for configuration in custom_configurations[2000:]:
 #     add_configuration(turtlebot_explore_db, configuration, servers[2:4])
 
-
-add_min_and_max_configurations(turtlebot_explore_db, filter_parameters[:1])
