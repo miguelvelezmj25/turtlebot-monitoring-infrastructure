@@ -9,6 +9,7 @@ import jetway.mdb as mdb
 
 import load_configurations
 import turtlebot_remote
+import safetyTest
 
 config_parser = ConfigParser.RawConfigParser()
 config_file_path = r'.serverconfig'
@@ -17,6 +18,7 @@ remote_host = config_parser.get(socket.gethostname(), 'simulator')
 
 MAX_RUN_TIME = 100
 MAX_EXPERIMENT_TIME = 300
+MAP_FILENAME = 'Wean-entire-floor4-waypoint-locations.json'
 navigation_configuration = {'target_x': 7, 'target_y': -10.5}
 
 
@@ -290,6 +292,12 @@ def measure(id, environment_configurations, amcl_configurations):
     nfp_id = mdb.get_nfp_id('time')
     mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value',
                '"{}", "{}", "{}", {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id, duration))
+
+    isSafeRecords = safetyTest.getIsSafeRecords(MAP_FILENAME, measurements[turtlebot_remote.GROUND_TRUTH_POSE])
+    print isSafeRecords
+    isRunSafe = reduce((lambda rec_1, rec_2: rec_1[1] and rec_2[1]), isSafeRecords)
+    print isRunSafe
+
 
 signal.signal(signal.SIGALRM, signal_handler)
 
