@@ -239,7 +239,7 @@ def build_configurations(options):
 
         for command in load_configurations.ig_command_parameters_to_explore_values:
             if command in option:
-                configurations[command] = option[len(command) + 1:]
+                configurations[command] = str(option[len(command) + 1:])
                 has_command = True
                 break
 
