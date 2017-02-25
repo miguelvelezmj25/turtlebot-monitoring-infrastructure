@@ -20,6 +20,8 @@ import argparse
 X_MAP_TO_GAZEBO_TRANSLATION = 56
 Y_MAP_TO_GAZEBO_TRANSLATION = 42
 
+MAX_RUN_TIME = 80
+
 
 def getTurtleBotState():
     try:
@@ -58,9 +60,12 @@ def main():
     start_x, start_y, start_w, start_v = getTurtleBotState()
     print("start (x, y): ({x}, {y})".format(x=start_x, y=start_y))
 
-    client.send_goal(goal)
-
-    client.wait_for_result()
+    rospy.loginfo("Sending goal location ...")
+    start_time = rospy.get_time()
+    ac.send_goal(goal)
+    ac.wait_for_result(rospy.Duration(MAX_RUN_TIME))
+    end_time = rospy.get_time()
+    rospy.loginfo("Elapsed time: " + str(end_time - start_time))
 
     end_x, end_y, end_w, end_v = getTurtleBotState()
     print("end (x, y): ({x}, {y})".format(x=end_x, y=end_y))
