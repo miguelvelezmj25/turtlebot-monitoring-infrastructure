@@ -66,12 +66,10 @@ def get_cpu_utilization(id, nfp, utilization_data, time_range):
                '"{}", "{}", "{}", {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id, mean))
 
 
-def get_localization_uncertainty(id, duration, result, ground_truth_data, estimate_monitor_data):
+def get_localization_uncertainty(id, ground_truth_data, estimate_monitor_data):
     """
 
     :param id:
-    :param duration:
-    :param result:
     :param ground_truth_data:
     :param estimate_monitor_data:
     :return:
@@ -121,13 +119,6 @@ def get_localization_uncertainty(id, duration, result, ground_truth_data, estima
                        '"{}", "{}", "{}", {}'.format(id, remote_host, socket.gethostname(), nfp_id))
         except mdb.connector.Error as error:
             print "Error when inserting data: {}".format(error)
-
-    if result == turtlebot_remote.FAIL:
-        duration = MAX_RUN_TIME
-
-    nfp_id = mdb.get_nfp_id('time')
-    mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value',
-               '"{}", "{}", "{}", {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id, duration))
 
 
 def filter_data(data, start_time=-1):
@@ -273,8 +264,7 @@ def measure(id, environment_configurations, amcl_configurations):
     measurements = run(id, settings)
 
     if len(measurements[turtlebot_remote.GROUND_TRUTH_POSE]) > 0 and len(measurements[turtlebot_remote.ESTIMATE_POSE]) > 0:
-        get_localization_uncertainty(id, measurements[turtlebot_remote.DURATION], measurements[turtlebot_remote.RESULT],
-                                     measurements[turtlebot_remote.GROUND_TRUTH_POSE],
+        get_localization_uncertainty(id, measurements[turtlebot_remote.GROUND_TRUTH_POSE],
                                      measurements[turtlebot_remote.ESTIMATE_POSE])
 
         time_range = (measurements[turtlebot_remote.ESTIMATE_POSE][0][0],
@@ -292,6 +282,14 @@ def measure(id, environment_configurations, amcl_configurations):
     if len(measurements[turtlebot_remote.LOCALIZATION_CPU_MONITOR]) > 0:
         get_cpu_utilization(id, 'mean_amcl_cpu_utilization', measurements[turtlebot_remote.LOCALIZATION_CPU_MONITOR], time_range)
 
+    if measurements[turtlebot_remote.RESULT] == turtlebot_remote.FAIL:
+        duration = MAX_RUN_TIME
+    else:
+        duration = measurements[turtlebot_remote.DURATION]
+
+    nfp_id = mdb.get_nfp_id('time')
+    mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value',
+               '"{}", "{}", "{}", {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id, duration))
 
 signal.signal(signal.SIGALRM, signal_handler)
 
