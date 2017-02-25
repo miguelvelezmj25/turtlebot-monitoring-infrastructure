@@ -69,9 +69,11 @@
   </include>
   -->
   <!-- Launch move base -->
+  <!--
   <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml">
     <arg name="custom_param_file" value="$(arg custom_param_file)"/>
   </include>
+  -->
 
   <!-- Launch instruction graph, with initial instruction files -->
   <node name="ig_interpreter" pkg="ig_action_server" type="ig_server.py" output="screen"/>
