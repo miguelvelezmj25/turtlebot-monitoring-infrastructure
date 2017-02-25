@@ -293,9 +293,15 @@ def measure(id, environment_configurations, amcl_configurations):
     mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value',
                '"{}", "{}", "{}", {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id, duration))
 
-    isSafeRecords = safetyTest.getIsSafeRecords(MAP_FILENAME, measurements[turtlebot_remote.GROUND_TRUTH_POSE])
-    print isSafeRecords
-    isRunSafe = reduce((lambda rec_1, rec_2: rec_1[1] and rec_2[1]), isSafeRecords)
+    is_safe_records = safetyTest.getIsSafeRecords(MAP_FILENAME, measurements[turtlebot_remote.GROUND_TRUTH_POSE])
+
+    nfp_id = mdb.get_nfp_id('safety')
+    for record in is_safe_records:
+        mdb.insert('measurements_verbose', 'configuration_id, simulator, host, nfp_id, value, time',
+                   '"{}", "{}", "{}", {}, {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id, record[1],
+                                                         record[0]))
+
+    isRunSafe = reduce((lambda rec_1, rec_2: rec_1[1] and rec_2[1]), is_safe_records)
     print isRunSafe
 
 
