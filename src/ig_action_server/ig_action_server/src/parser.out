@@ -1,0 +1,879 @@
+Created by PLY version 3.8 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> P LPAR vertex COMMA vertices RPAR
+Rule 2     vertices -> NIL
+Rule 3     vertices -> vertex CONS vertices
+Rule 4     vertex -> V LPAR NUM COMMA content RPAR
+Rule 5     content -> DO action THEN NUM
+Rule 6     content -> DO action UNTIL cnd THEN NUM
+Rule 7     content -> IF cnd THEN NUM ELSE NUM
+Rule 8     content -> GOTO NUM
+Rule 9     content -> END
+Rule 10    action -> MOVE LPAR NUM COMMA NUM COMMA NUM COMMA NUM COMMA NUM RPAR
+Rule 11    action -> SAY LPAR STRING RPAR
+Rule 12    action -> MOVETO LPAR NUM COMMA NUM RPAR
+Rule 13    action -> LOCATE LPAR NUM COMMA NUM RPAR
+Rule 14    action -> MOVEABS LPAR NUM COMMA NUM COMMA NUM RPAR
+Rule 15    action -> MOVEREL LPAR NUM COMMA NUM COMMA NUM RPAR
+Rule 16    action -> TURNABS LPAR STRING COMMA NUM RPAR
+Rule 17    action -> TURNREL LPAR NUM COMMA NUM RPAR
+Rule 18    action -> FORWARD LPAR NUM COMMA NUM RPAR
+Rule 19    cnd -> VISIBLE LPAR STRING RPAR
+Rule 20    cnd -> STOP LPAR NUM COMMA STRING RPAR
+
+Terminals, with rules where they appear
+
+COMMA                : 1 4 10 10 10 10 12 13 14 14 15 15 16 17 18 20
+CONS                 : 3
+DO                   : 5 6
+ELSE                 : 7
+END                  : 9
+FORWARD              : 18
+GOTO                 : 8
+IF                   : 7
+LOCATE               : 13
+LPAR                 : 1 4 10 11 12 13 14 15 16 17 18 19 20
+MOVE                 : 10
+MOVEABS              : 14
+MOVEREL              : 15
+MOVETO               : 12
+NIL                  : 2
+NUM                  : 4 5 6 7 7 8 10 10 10 10 10 12 12 13 13 14 14 14 15 15 15 16 17 17 18 18 20
+P                    : 1
+RPAR                 : 1 4 10 11 12 13 14 15 16 17 18 19 20
+SAY                  : 11
+STOP                 : 20
+STRING               : 11 16 19 20
+THEN                 : 5 6 7
+TURNABS              : 16
+TURNREL              : 17
+UNTIL                : 6
+V                    : 4
+VISIBLE              : 19
+error                : 
+
+Nonterminals, with rules where they appear
+
+action               : 5 6
+cnd                  : 6 7
+content              : 4
+program              : 0
+vertex               : 1 3
+vertices             : 1 3
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . P LPAR vertex COMMA vertices RPAR
+
+    P               shift and go to state 1
+
+    program                        shift and go to state 2
+
+state 1
+
+    (1) program -> P . LPAR vertex COMMA vertices RPAR
+
+    LPAR            shift and go to state 3
+
+
+state 2
+
+    (0) S' -> program .
+
+
+
+state 3
+
+    (1) program -> P LPAR . vertex COMMA vertices RPAR
+    (4) vertex -> . V LPAR NUM COMMA content RPAR
+
+    V               shift and go to state 5
+
+    vertex                         shift and go to state 4
+
+state 4
+
+    (1) program -> P LPAR vertex . COMMA vertices RPAR
+
+    COMMA           shift and go to state 6
+
+
+state 5
+
+    (4) vertex -> V . LPAR NUM COMMA content RPAR
+
+    LPAR            shift and go to state 7
+
+
+state 6
+
+    (1) program -> P LPAR vertex COMMA . vertices RPAR
+    (2) vertices -> . NIL
+    (3) vertices -> . vertex CONS vertices
+    (4) vertex -> . V LPAR NUM COMMA content RPAR
+
+    NIL             shift and go to state 8
+    V               shift and go to state 5
+
+    vertex                         shift and go to state 9
+    vertices                       shift and go to state 10
+
+state 7
+
+    (4) vertex -> V LPAR . NUM COMMA content RPAR
+
+    NUM             shift and go to state 11
+
+
+state 8
+
+    (2) vertices -> NIL .
+
+    RPAR            reduce using rule 2 (vertices -> NIL .)
+
+
+state 9
+
+    (3) vertices -> vertex . CONS vertices
+
+    CONS            shift and go to state 12
+
+
+state 10
+
+    (1) program -> P LPAR vertex COMMA vertices . RPAR
+
+    RPAR            shift and go to state 13
+
+
+state 11
+
+    (4) vertex -> V LPAR NUM . COMMA content RPAR
+
+    COMMA           shift and go to state 14
+
+
+state 12
+
+    (3) vertices -> vertex CONS . vertices
+    (2) vertices -> . NIL
+    (3) vertices -> . vertex CONS vertices
+    (4) vertex -> . V LPAR NUM COMMA content RPAR
+
+    NIL             shift and go to state 8
+    V               shift and go to state 5
+
+    vertex                         shift and go to state 9
+    vertices                       shift and go to state 15
+
+state 13
+
+    (1) program -> P LPAR vertex COMMA vertices RPAR .
+
+    $end            reduce using rule 1 (program -> P LPAR vertex COMMA vertices RPAR .)
+
+
+state 14
+
+    (4) vertex -> V LPAR NUM COMMA . content RPAR
+    (5) content -> . DO action THEN NUM
+    (6) content -> . DO action UNTIL cnd THEN NUM
+    (7) content -> . IF cnd THEN NUM ELSE NUM
+    (8) content -> . GOTO NUM
+    (9) content -> . END
+
+    DO              shift and go to state 18
+    IF              shift and go to state 20
+    GOTO            shift and go to state 17
+    END             shift and go to state 16
+
+    content                        shift and go to state 19
+
+state 15
+
+    (3) vertices -> vertex CONS vertices .
+
+    RPAR            reduce using rule 3 (vertices -> vertex CONS vertices .)
+
+
+state 16
+
+    (9) content -> END .
+
+    RPAR            reduce using rule 9 (content -> END .)
+
+
+state 17
+
+    (8) content -> GOTO . NUM
+
+    NUM             shift and go to state 21
+
+
+state 18
+
+    (5) content -> DO . action THEN NUM
+    (6) content -> DO . action UNTIL cnd THEN NUM
+    (10) action -> . MOVE LPAR NUM COMMA NUM COMMA NUM COMMA NUM COMMA NUM RPAR
+    (11) action -> . SAY LPAR STRING RPAR
+    (12) action -> . MOVETO LPAR NUM COMMA NUM RPAR
+    (13) action -> . LOCATE LPAR NUM COMMA NUM RPAR
+    (14) action -> . MOVEABS LPAR NUM COMMA NUM COMMA NUM RPAR
+    (15) action -> . MOVEREL LPAR NUM COMMA NUM COMMA NUM RPAR
+    (16) action -> . TURNABS LPAR STRING COMMA NUM RPAR
+    (17) action -> . TURNREL LPAR NUM COMMA NUM RPAR
+    (18) action -> . FORWARD LPAR NUM COMMA NUM RPAR
+
+    MOVE            shift and go to state 26
+    SAY             shift and go to state 27
+    MOVETO          shift and go to state 23
+    LOCATE          shift and go to state 22
+    MOVEABS         shift and go to state 25
+    MOVEREL         shift and go to state 24
+    TURNABS         shift and go to state 31
+    TURNREL         shift and go to state 29
+    FORWARD         shift and go to state 28
+
+    action                         shift and go to state 30
+
+state 19
+
+    (4) vertex -> V LPAR NUM COMMA content . RPAR
+
+    RPAR            shift and go to state 32
+
+
+state 20
+
+    (7) content -> IF . cnd THEN NUM ELSE NUM
+    (19) cnd -> . VISIBLE LPAR STRING RPAR
+    (20) cnd -> . STOP LPAR NUM COMMA STRING RPAR
+
+    VISIBLE         shift and go to state 34
+    STOP            shift and go to state 33
+
+    cnd                            shift and go to state 35
+
+state 21
+
+    (8) content -> GOTO NUM .
+
+    RPAR            reduce using rule 8 (content -> GOTO NUM .)
+
+
+state 22
+
+    (13) action -> LOCATE . LPAR NUM COMMA NUM RPAR
+
+    LPAR            shift and go to state 36
+
+
+state 23
+
+    (12) action -> MOVETO . LPAR NUM COMMA NUM RPAR
+
+    LPAR            shift and go to state 37
+
+
+state 24
+
+    (15) action -> MOVEREL . LPAR NUM COMMA NUM COMMA NUM RPAR
+
+    LPAR            shift and go to state 38
+
+
+state 25
+
+    (14) action -> MOVEABS . LPAR NUM COMMA NUM COMMA NUM RPAR
+
+    LPAR            shift and go to state 39
+
+
+state 26
+
+    (10) action -> MOVE . LPAR NUM COMMA NUM COMMA NUM COMMA NUM COMMA NUM RPAR
+
+    LPAR            shift and go to state 40
+
+
+state 27
+
+    (11) action -> SAY . LPAR STRING RPAR
+
+    LPAR            shift and go to state 41
+
+
+state 28
+
+    (18) action -> FORWARD . LPAR NUM COMMA NUM RPAR
+
+    LPAR            shift and go to state 42
+
+
+state 29
+
+    (17) action -> TURNREL . LPAR NUM COMMA NUM RPAR
+
+    LPAR            shift and go to state 43
+
+
+state 30
+
+    (5) content -> DO action . THEN NUM
+    (6) content -> DO action . UNTIL cnd THEN NUM
+
+    THEN            shift and go to state 44
+    UNTIL           shift and go to state 45
+
+
+state 31
+
+    (16) action -> TURNABS . LPAR STRING COMMA NUM RPAR
+
+    LPAR            shift and go to state 46
+
+
+state 32
+
+    (4) vertex -> V LPAR NUM COMMA content RPAR .
+
+    COMMA           reduce using rule 4 (vertex -> V LPAR NUM COMMA content RPAR .)
+    CONS            reduce using rule 4 (vertex -> V LPAR NUM COMMA content RPAR .)
+
+
+state 33
+
+    (20) cnd -> STOP . LPAR NUM COMMA STRING RPAR
+
+    LPAR            shift and go to state 47
+
+
+state 34
+
+    (19) cnd -> VISIBLE . LPAR STRING RPAR
+
+    LPAR            shift and go to state 48
+
+
+state 35
+
+    (7) content -> IF cnd . THEN NUM ELSE NUM
+
+    THEN            shift and go to state 49
+
+
+state 36
+
+    (13) action -> LOCATE LPAR . NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 50
+
+
+state 37
+
+    (12) action -> MOVETO LPAR . NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 51
+
+
+state 38
+
+    (15) action -> MOVEREL LPAR . NUM COMMA NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 52
+
+
+state 39
+
+    (14) action -> MOVEABS LPAR . NUM COMMA NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 53
+
+
+state 40
+
+    (10) action -> MOVE LPAR . NUM COMMA NUM COMMA NUM COMMA NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 54
+
+
+state 41
+
+    (11) action -> SAY LPAR . STRING RPAR
+
+    STRING          shift and go to state 55
+
+
+state 42
+
+    (18) action -> FORWARD LPAR . NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 56
+
+
+state 43
+
+    (17) action -> TURNREL LPAR . NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 57
+
+
+state 44
+
+    (5) content -> DO action THEN . NUM
+
+    NUM             shift and go to state 58
+
+
+state 45
+
+    (6) content -> DO action UNTIL . cnd THEN NUM
+    (19) cnd -> . VISIBLE LPAR STRING RPAR
+    (20) cnd -> . STOP LPAR NUM COMMA STRING RPAR
+
+    VISIBLE         shift and go to state 34
+    STOP            shift and go to state 33
+
+    cnd                            shift and go to state 59
+
+state 46
+
+    (16) action -> TURNABS LPAR . STRING COMMA NUM RPAR
+
+    STRING          shift and go to state 60
+
+
+state 47
+
+    (20) cnd -> STOP LPAR . NUM COMMA STRING RPAR
+
+    NUM             shift and go to state 61
+
+
+state 48
+
+    (19) cnd -> VISIBLE LPAR . STRING RPAR
+
+    STRING          shift and go to state 62
+
+
+state 49
+
+    (7) content -> IF cnd THEN . NUM ELSE NUM
+
+    NUM             shift and go to state 63
+
+
+state 50
+
+    (13) action -> LOCATE LPAR NUM . COMMA NUM RPAR
+
+    COMMA           shift and go to state 64
+
+
+state 51
+
+    (12) action -> MOVETO LPAR NUM . COMMA NUM RPAR
+
+    COMMA           shift and go to state 65
+
+
+state 52
+
+    (15) action -> MOVEREL LPAR NUM . COMMA NUM COMMA NUM RPAR
+
+    COMMA           shift and go to state 66
+
+
+state 53
+
+    (14) action -> MOVEABS LPAR NUM . COMMA NUM COMMA NUM RPAR
+
+    COMMA           shift and go to state 67
+
+
+state 54
+
+    (10) action -> MOVE LPAR NUM . COMMA NUM COMMA NUM COMMA NUM COMMA NUM RPAR
+
+    COMMA           shift and go to state 68
+
+
+state 55
+
+    (11) action -> SAY LPAR STRING . RPAR
+
+    RPAR            shift and go to state 69
+
+
+state 56
+
+    (18) action -> FORWARD LPAR NUM . COMMA NUM RPAR
+
+    COMMA           shift and go to state 70
+
+
+state 57
+
+    (17) action -> TURNREL LPAR NUM . COMMA NUM RPAR
+
+    COMMA           shift and go to state 71
+
+
+state 58
+
+    (5) content -> DO action THEN NUM .
+
+    RPAR            reduce using rule 5 (content -> DO action THEN NUM .)
+
+
+state 59
+
+    (6) content -> DO action UNTIL cnd . THEN NUM
+
+    THEN            shift and go to state 72
+
+
+state 60
+
+    (16) action -> TURNABS LPAR STRING . COMMA NUM RPAR
+
+    COMMA           shift and go to state 73
+
+
+state 61
+
+    (20) cnd -> STOP LPAR NUM . COMMA STRING RPAR
+
+    COMMA           shift and go to state 74
+
+
+state 62
+
+    (19) cnd -> VISIBLE LPAR STRING . RPAR
+
+    RPAR            shift and go to state 75
+
+
+state 63
+
+    (7) content -> IF cnd THEN NUM . ELSE NUM
+
+    ELSE            shift and go to state 76
+
+
+state 64
+
+    (13) action -> LOCATE LPAR NUM COMMA . NUM RPAR
+
+    NUM             shift and go to state 77
+
+
+state 65
+
+    (12) action -> MOVETO LPAR NUM COMMA . NUM RPAR
+
+    NUM             shift and go to state 78
+
+
+state 66
+
+    (15) action -> MOVEREL LPAR NUM COMMA . NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 79
+
+
+state 67
+
+    (14) action -> MOVEABS LPAR NUM COMMA . NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 80
+
+
+state 68
+
+    (10) action -> MOVE LPAR NUM COMMA . NUM COMMA NUM COMMA NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 81
+
+
+state 69
+
+    (11) action -> SAY LPAR STRING RPAR .
+
+    THEN            reduce using rule 11 (action -> SAY LPAR STRING RPAR .)
+    UNTIL           reduce using rule 11 (action -> SAY LPAR STRING RPAR .)
+
+
+state 70
+
+    (18) action -> FORWARD LPAR NUM COMMA . NUM RPAR
+
+    NUM             shift and go to state 82
+
+
+state 71
+
+    (17) action -> TURNREL LPAR NUM COMMA . NUM RPAR
+
+    NUM             shift and go to state 83
+
+
+state 72
+
+    (6) content -> DO action UNTIL cnd THEN . NUM
+
+    NUM             shift and go to state 84
+
+
+state 73
+
+    (16) action -> TURNABS LPAR STRING COMMA . NUM RPAR
+
+    NUM             shift and go to state 85
+
+
+state 74
+
+    (20) cnd -> STOP LPAR NUM COMMA . STRING RPAR
+
+    STRING          shift and go to state 86
+
+
+state 75
+
+    (19) cnd -> VISIBLE LPAR STRING RPAR .
+
+    THEN            reduce using rule 19 (cnd -> VISIBLE LPAR STRING RPAR .)
+
+
+state 76
+
+    (7) content -> IF cnd THEN NUM ELSE . NUM
+
+    NUM             shift and go to state 87
+
+
+state 77
+
+    (13) action -> LOCATE LPAR NUM COMMA NUM . RPAR
+
+    RPAR            shift and go to state 88
+
+
+state 78
+
+    (12) action -> MOVETO LPAR NUM COMMA NUM . RPAR
+
+    RPAR            shift and go to state 89
+
+
+state 79
+
+    (15) action -> MOVEREL LPAR NUM COMMA NUM . COMMA NUM RPAR
+
+    COMMA           shift and go to state 90
+
+
+state 80
+
+    (14) action -> MOVEABS LPAR NUM COMMA NUM . COMMA NUM RPAR
+
+    COMMA           shift and go to state 91
+
+
+state 81
+
+    (10) action -> MOVE LPAR NUM COMMA NUM . COMMA NUM COMMA NUM COMMA NUM RPAR
+
+    COMMA           shift and go to state 92
+
+
+state 82
+
+    (18) action -> FORWARD LPAR NUM COMMA NUM . RPAR
+
+    RPAR            shift and go to state 93
+
+
+state 83
+
+    (17) action -> TURNREL LPAR NUM COMMA NUM . RPAR
+
+    RPAR            shift and go to state 94
+
+
+state 84
+
+    (6) content -> DO action UNTIL cnd THEN NUM .
+
+    RPAR            reduce using rule 6 (content -> DO action UNTIL cnd THEN NUM .)
+
+
+state 85
+
+    (16) action -> TURNABS LPAR STRING COMMA NUM . RPAR
+
+    RPAR            shift and go to state 95
+
+
+state 86
+
+    (20) cnd -> STOP LPAR NUM COMMA STRING . RPAR
+
+    RPAR            shift and go to state 96
+
+
+state 87
+
+    (7) content -> IF cnd THEN NUM ELSE NUM .
+
+    RPAR            reduce using rule 7 (content -> IF cnd THEN NUM ELSE NUM .)
+
+
+state 88
+
+    (13) action -> LOCATE LPAR NUM COMMA NUM RPAR .
+
+    THEN            reduce using rule 13 (action -> LOCATE LPAR NUM COMMA NUM RPAR .)
+    UNTIL           reduce using rule 13 (action -> LOCATE LPAR NUM COMMA NUM RPAR .)
+
+
+state 89
+
+    (12) action -> MOVETO LPAR NUM COMMA NUM RPAR .
+
+    THEN            reduce using rule 12 (action -> MOVETO LPAR NUM COMMA NUM RPAR .)
+    UNTIL           reduce using rule 12 (action -> MOVETO LPAR NUM COMMA NUM RPAR .)
+
+
+state 90
+
+    (15) action -> MOVEREL LPAR NUM COMMA NUM COMMA . NUM RPAR
+
+    NUM             shift and go to state 97
+
+
+state 91
+
+    (14) action -> MOVEABS LPAR NUM COMMA NUM COMMA . NUM RPAR
+
+    NUM             shift and go to state 98
+
+
+state 92
+
+    (10) action -> MOVE LPAR NUM COMMA NUM COMMA . NUM COMMA NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 99
+
+
+state 93
+
+    (18) action -> FORWARD LPAR NUM COMMA NUM RPAR .
+
+    THEN            reduce using rule 18 (action -> FORWARD LPAR NUM COMMA NUM RPAR .)
+    UNTIL           reduce using rule 18 (action -> FORWARD LPAR NUM COMMA NUM RPAR .)
+
+
+state 94
+
+    (17) action -> TURNREL LPAR NUM COMMA NUM RPAR .
+
+    THEN            reduce using rule 17 (action -> TURNREL LPAR NUM COMMA NUM RPAR .)
+    UNTIL           reduce using rule 17 (action -> TURNREL LPAR NUM COMMA NUM RPAR .)
+
+
+state 95
+
+    (16) action -> TURNABS LPAR STRING COMMA NUM RPAR .
+
+    THEN            reduce using rule 16 (action -> TURNABS LPAR STRING COMMA NUM RPAR .)
+    UNTIL           reduce using rule 16 (action -> TURNABS LPAR STRING COMMA NUM RPAR .)
+
+
+state 96
+
+    (20) cnd -> STOP LPAR NUM COMMA STRING RPAR .
+
+    THEN            reduce using rule 20 (cnd -> STOP LPAR NUM COMMA STRING RPAR .)
+
+
+state 97
+
+    (15) action -> MOVEREL LPAR NUM COMMA NUM COMMA NUM . RPAR
+
+    RPAR            shift and go to state 100
+
+
+state 98
+
+    (14) action -> MOVEABS LPAR NUM COMMA NUM COMMA NUM . RPAR
+
+    RPAR            shift and go to state 101
+
+
+state 99
+
+    (10) action -> MOVE LPAR NUM COMMA NUM COMMA NUM . COMMA NUM COMMA NUM RPAR
+
+    COMMA           shift and go to state 102
+
+
+state 100
+
+    (15) action -> MOVEREL LPAR NUM COMMA NUM COMMA NUM RPAR .
+
+    THEN            reduce using rule 15 (action -> MOVEREL LPAR NUM COMMA NUM COMMA NUM RPAR .)
+    UNTIL           reduce using rule 15 (action -> MOVEREL LPAR NUM COMMA NUM COMMA NUM RPAR .)
+
+
+state 101
+
+    (14) action -> MOVEABS LPAR NUM COMMA NUM COMMA NUM RPAR .
+
+    THEN            reduce using rule 14 (action -> MOVEABS LPAR NUM COMMA NUM COMMA NUM RPAR .)
+    UNTIL           reduce using rule 14 (action -> MOVEABS LPAR NUM COMMA NUM COMMA NUM RPAR .)
+
+
+state 102
+
+    (10) action -> MOVE LPAR NUM COMMA NUM COMMA NUM COMMA . NUM COMMA NUM RPAR
+
+    NUM             shift and go to state 103
+
+
+state 103
+
+    (10) action -> MOVE LPAR NUM COMMA NUM COMMA NUM COMMA NUM . COMMA NUM RPAR
+
+    COMMA           shift and go to state 104
+
+
+state 104
+
+    (10) action -> MOVE LPAR NUM COMMA NUM COMMA NUM COMMA NUM COMMA . NUM RPAR
+
+    NUM             shift and go to state 105
+
+
+state 105
+
+    (10) action -> MOVE LPAR NUM COMMA NUM COMMA NUM COMMA NUM COMMA NUM . RPAR
+
+    RPAR            shift and go to state 106
+
+
+state 106
+
+    (10) action -> MOVE LPAR NUM COMMA NUM COMMA NUM COMMA NUM COMMA NUM RPAR .
+
+    THEN            reduce using rule 10 (action -> MOVE LPAR NUM COMMA NUM COMMA NUM COMMA NUM COMMA NUM RPAR .)
+    UNTIL           reduce using rule 10 (action -> MOVE LPAR NUM COMMA NUM COMMA NUM COMMA NUM COMMA NUM RPAR .)
+

@@ -6,13 +6,15 @@
 -->
 <launch>
   <!-- This is the map file that will be used for planning -->
-  <arg name="map_file" value="$(find measurement)/maps/wean4.yaml"/>
+  <!-- <arg name="map_file" value="$(find measurement)/maps/wean4.yaml"/> -->
+  <arg name="map_file" value="$(find measurement)/maps/Wean-entire-floor4.yaml"/>
 
 
   <!-- Start the gazebo world, so that obstacles can be mapped -->
   <!-- NOTE: The maze in the world might not be needed if the map server is required -->
   <include file="$(find measurement)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find measurement)/worlds/Wean4.world"/>
+    <!-- <arg name="world_name" value="$(find measurement)/worlds/Wean4.world"/> -->
+    <arg name="world_name" value="$(find measurement)/worlds/Wean-complete-floor4.world"/>
     <arg name="gui" value="false"/>
     <!--  <arg name="headless" value="true"/> -->
   </include>

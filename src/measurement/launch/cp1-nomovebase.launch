@@ -14,24 +14,25 @@
   <arg name="custom_param_file" value="$(find measurement)/param/move_base_params.yaml"/>
 
   <!-- This is the map file that will be used for planning -->
-  <!-- <arg name="map_file" value="$(find measurement)/maps/wean4.yaml"/> -->
   <arg name="map_file" value="$(find measurement)/maps/Wean-entire-floor4.yaml"/>
 
-  <!-- Spawn the turtlebot -->
-  <!-- <include file="$(find turtlebot_gazebo)/launch/includes/$(arg base).launch.xml">
-      <arg name="base" value="$(arg base)"/>
-      <arg name="3d_sensor" value="$(arg 3d_sensor)"/>
-      <arg name="stacks" value="$(arg stacks)"/>
-  </include>
-  -->
 
+  <!-- Start the gazebo world, so that obstacles can be mapped -->
+  <!-- NOTE: The maze in the world might not be needed if the map server is required -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find measurement)/worlds/Wean-complete-floor4.world"/>
+    <arg name="gui" value="false"/>
+    <arg name="headless" value="true"/>
+  </include>
+
+  <!-- Spawn the turtlebot -->
   <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find turtlebot_description)/robots/$(arg base)_$(arg stacks)_$(arg 3d_sensor).urdf.xacro'" />
   <param name="robot_description" command="$(arg urdf_file)" />
-
+  
   <!-- Gazebo model spawner -->
   <node name="spawn_turtlebot_model" pkg="gazebo_ros" type="spawn_model"
         args="-x -40 -y 26.5 -unpause -urdf -param robot_description -model mobile_base"/>
-
+  
   <!-- Velocity muxer -->
   <node pkg="nodelet" type="nodelet" name="mobile_base_nodelet_manager" args="manager"/>
   <node pkg="nodelet" type="nodelet" name="cmd_vel_mux"
@@ -45,6 +46,7 @@
   </node>
 
   <!-- Fake the laser with the kinect ? -->
+<!--
   <node pkg="nodelet" type="nodelet" name="laserscan_nodelet_manager" args="manager"/>
   <node pkg="nodelet" type="nodelet" name="depthimage_to_laserscan"
         args="load depthimage_to_laserscan/DepthImageToLaserScanNodelet laserscan_nodelet_manager">
@@ -54,29 +56,26 @@
     <remap from="image" to="/camera/depth/image_raw"/>
     <remap from="scan" to="/scan"/>
   </node>
+-->
+  <!-- start the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
 
   <!-- This is the initial pose (for AMCL) of the turtlebot -->
+  <!--
   <arg name="initial_pose_x" default="0.0"/> 
   <arg name="initial_pose_y" default="0.0"/> 
   <arg name="initial_pose_a" default="0.0"/>
-  <include file="$(find measurement)/launch/includes/amcl.launch.xml">
-    <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
-    <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+  <include file="$(find turtlebot_navigation)/launch/includes/amcl.launch.xml">
+    <arg name="initial_pose_x" value="15.5"/>
+    <arg name="initial_pose_y" value="69"/>
     <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
   </include>
-
-  <!-- Launch move base -->
-  <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml">
-    <arg name="custom_param_file" value="$(arg custom_param_file)"/>
-  </include>
-
+  -->
   <!-- Launch instruction graph, with initial instruction files -->
-<!--
-  <node name="ig_interpreter" pkg="ig_interpreter" type="ig_node" output="screen">
-    <param name="ig_file" value="$(find measurement)/instructions/hometogoal.ig"/>
+  <node name="ig_interpreter" pkg="ig_action_server" type="ig_server.py" output="screen">
+
   </node>
--->
-  <!-- launch node to report the state of the robot -->
-  <!-- Not the publish frequency is in Hz -->
+  <node name="brasscomms" pkg="brasscomms" type="brasscomms.py" output="screen">
+  </node>
 
 </launch>
