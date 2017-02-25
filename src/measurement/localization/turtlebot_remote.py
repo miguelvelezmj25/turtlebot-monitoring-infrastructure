@@ -94,8 +94,10 @@ def restart(environment_configurations):
 
 
 def measure(id, configurations):
+    print configurations
     print "Measuring for " + str(id)
 
+    return
     if os.path.exists('data/' + str(id)):
         shutil.rmtree('data/' + str(id))
     os.makedirs('data/' + str(id))

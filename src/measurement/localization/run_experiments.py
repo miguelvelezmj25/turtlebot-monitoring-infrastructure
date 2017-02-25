@@ -234,20 +234,30 @@ def build_configurations(options):
 
     for option in options.split(','):
         option = option.strip()
-        key, value = option.split(' ')
 
-        key = str(key)
+        has_command = False
 
-        if '"' in value or "'" in value:
-            configurations[key] = value[1:-1]
-        elif "." in value:
-            configurations[key] = float(value)
-        elif value == 'True':
-            configurations[key] = True
-        elif value == 'False':
-            configurations[key] = False
-        else:
-            configurations[key] = int(value)
+        for command in load_configurations.ig_command_parameters_to_explore_values:
+            if command in option:
+                configurations[command] = option[len(command) + 1:]
+                has_command = True
+                break
+
+        if not has_command:
+            key, value = option.split(' ')
+
+            key = str(key)
+
+            if '"' in value or "'" in value:
+                configurations[key] = value[1:-1]
+            elif "." in value:
+                configurations[key] = float(value)
+            elif value == 'True':
+                configurations[key] = True
+            elif value == 'False':
+                configurations[key] = False
+            else:
+                configurations[key] = int(value)
 
     return configurations
 

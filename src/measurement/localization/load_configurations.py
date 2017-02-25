@@ -91,6 +91,14 @@ def add_configurations_to_explore(db, configurations, values, workers=None, prio
         i += 1
 
 
+def instruction(db, commands, distances, speeds, workers=None, priority=None, iterations=6):
+    for command in commands:
+        for distance in distances:
+            for speed in speeds:
+                option = command + ' -d ' + str(distance) + ' -s ' + str(speed)
+                add_configuration(db, option, workers=workers, priority=priority, iterations=iterations)
+
+
 def add_configuration(db, configuration, workers=None, priority=None, iterations=6):
     mdb.startup(db)
 
@@ -203,6 +211,7 @@ odometry_parameters_boolean = [('tf_broadcast', True)]
 amcl_parameters_not_in_website = ['beam_skip_distance', 'beam_skip_threshold', 'first_map_only', 'restore_defaults',
                                   'do_beamskip']
 
+
 environment_parameters = [('kinect_miscalibration', 0, -0.7, 0.7), ('kinect_noise', 0, 0.1, 1.0),
                           ('odometry_miscalibration', 0, -0.7, 0.7), ('odometry_noise', 0, 0.1, 1.0),
                           ('kinect_array', 640, 0, 640)]
@@ -221,6 +230,14 @@ pair_wise_configurations = [('min_particles', 'max_particles')]
 pair_wise_configurations_values = [[(5, 10, 20, 30, 40, 50, 70, 100, 125, 150, 200, 250, 300, 350, 400, 450, 500, 750,
                                      1000), (5, 10, 20, 30, 40, 50, 70, 100, 125, 150, 200, 250, 300, 350, 400, 450,
                                              500, 750, 1000, 1500, 2000, 3500, 5000, 7500, 10000)]]
+
+ig_speed_parameters_to_explore = ['-s']
+ig_speed_parameters_to_explore_values = [0.35, 0.68]
+
+ig_distance_parameters_to_explore = ['-d']
+ig_distance_parameters_to_explore_values = [3, 4, 5, 6, 7, 8, 9, 10]
+
+ig_command_parameters_to_explore_values = ['move_abs', 'move_forward']
 
 custom_configurations = ['min_particles 5, max_particles 5, resample_interval 20',
                          'min_particles 1000, max_particles 1000, resample_interval 1',
