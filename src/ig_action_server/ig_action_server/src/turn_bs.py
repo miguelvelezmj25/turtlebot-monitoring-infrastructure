@@ -11,7 +11,7 @@ def forward(distance, speed):
 	twist = Twist()
 	cmd_vel = rospy.Publisher("cmd_vel_mux/input/teleop", Twist, queue_size=10)
 	listener = TransformListener()
-	listener.waitForTransform("/base_link", "/odom", rospy.Time(0), rospy.Duration(1))
+	listener.waitForTransform("/base_link", "/odom", rospy.Time(0), rospy.Duration(3))
 	(start_t, start_r) = listener.lookupTransform("/base_link", "/odom", rospy.Time())
 	start_transform = t.concatenate_matrices(t.translation_matrix(start_t), t.quaternion_matrix(start_r))
 	twist.linear.x = abs(speed)
