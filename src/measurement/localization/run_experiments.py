@@ -302,8 +302,9 @@ def measure(id, environment_configurations, amcl_configurations):
                                                          record[0]))
 
     isSafeRecordsNoTime = [isSafe for (time, isSafe) in is_safe_records]
-    isRunSafe = reduce((lambda isSafeA, isSafeB: isSafeA and isSafeB), isSafeRecordsNoTime)
-    print isRunSafe
+    is_run_safe = reduce((lambda isSafeA, isSafeB: isSafeA and isSafeB), isSafeRecordsNoTime)
+    mdb.insert('measurements', 'configuration_id, simulator, host, nfp_id, value',
+               '"{}", "{}", "{}", {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id, is_run_safe))
 
 
 signal.signal(signal.SIGALRM, signal_handler)
