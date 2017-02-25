@@ -62,8 +62,8 @@ def main():
 
     rospy.loginfo("Sending goal location ...")
     start_time = rospy.get_time()
-    ac.send_goal(goal)
-    ac.wait_for_result(rospy.Duration(MAX_RUN_TIME))
+    client.send_goal(goal)
+    client.wait_for_result(rospy.Duration(MAX_RUN_TIME))
     end_time = rospy.get_time()
     rospy.loginfo("Elapsed time: " + str(end_time - start_time))
 
