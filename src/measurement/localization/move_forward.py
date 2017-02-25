@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import roslib
+import roslib;
 
 roslib.load_manifest('ig_action_msgs')
 import rospy
@@ -15,6 +15,11 @@ import requests
 
 import argparse
 
+# These are translation coordinates between the map and gazebo
+# The two things should really be syncrhonized
+X_MAP_TO_GAZEBO_TRANSLATION = 56
+Y_MAP_TO_GAZEBO_TRANSLATION = 42
+
 
 def getTurtleBotState():
     try:
@@ -23,11 +28,15 @@ def getTurtleBotState():
         q = (tb.pose.orientation.x, tb.pose.orientation.y, tb.pose.orientation.z, tb.pose.orientation.w)
         w = tf.euler_from_quaternion(q)[2]
         v = math.sqrt(tb.twist.linear.x ** 2 + tb.twist.linear.y ** 2)
-        x, y = self.translateGazeboToMap(tb.pose.position.x, tb.pose.position.y)
+        x, y = translateGazeboToMap(tb.pose.position.x, tb.pose.position.y)
         return x, y, w, v
     except rospy.ServiceException, e:
         rospy.logerr("Could not get state of robot: %s" % e)
         return None, None, None, None
+
+
+def translateGazeboToMap(gx, gy):
+    return gx + X_MAP_TO_GAZEBO_TRANSLATION, gy + Y_MAP_TO_GAZEBO_TRANSLATION
 
 
 def main():
@@ -49,14 +58,9 @@ def main():
     start_x, start_y, start_w, start_v = getTurtleBotState()
     print("start (x, y): ({x}, {y})".format(x=start_x, y=start_y))
 
-    rospy.loginfo("Sending goal location ...")
-    start_time = rospy.get_time()
     client.send_goal(goal)
 
     client.wait_for_result()
-
-    end_time = rospy.get_time()
-    rospy.loginfo("Elapsed time: " + str(end_time - start_time))
 
     end_x, end_y, end_w, end_v = getTurtleBotState()
     print("end (x, y): ({x}, {y})".format(x=end_x, y=end_y))
