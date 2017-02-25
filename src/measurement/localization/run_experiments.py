@@ -272,14 +272,19 @@ def measure(id, environment_configurations, amcl_configurations):
 
     measurements = run(id, settings)
 
-    print measurements[turtlebot_remote.GROUND_TRUTH_POSE]
-    print measurements[turtlebot_remote.ESTIMATE_POSE]
-    get_localization_uncertainty(id, measurements[turtlebot_remote.DURATION], measurements[turtlebot_remote.RESULT],
-                                 measurements[turtlebot_remote.GROUND_TRUTH_POSE],
-                                 measurements[turtlebot_remote.ESTIMATE_POSE])
+    if len(measurements[turtlebot_remote.GROUND_TRUTH_POSE]) > 0 and len(measurements[turtlebot_remote.ESTIMATE_POSE]) > 0:
+        get_localization_uncertainty(id, measurements[turtlebot_remote.DURATION], measurements[turtlebot_remote.RESULT],
+                                     measurements[turtlebot_remote.GROUND_TRUTH_POSE],
+                                     measurements[turtlebot_remote.ESTIMATE_POSE])
 
-    time_range = (measurements[turtlebot_remote.ESTIMATE_POSE][0][0],
-                  measurements[turtlebot_remote.ESTIMATE_POSE][-1][0])
+        time_range = (measurements[turtlebot_remote.ESTIMATE_POSE][0][0],
+                      measurements[turtlebot_remote.ESTIMATE_POSE][-1][0])
+    elif len(measurements[turtlebot_remote.GROUND_TRUTH_POSE]) > 0:
+        time_range = (measurements[turtlebot_remote.GROUND_TRUTH_POSE][0][0],
+                      measurements[turtlebot_remote.GROUND_TRUTH_POSE][-1][0])
+    else:
+        time_range = (measurements[turtlebot_remote.ESTIMATE_POSE][0][0],
+                      measurements[turtlebot_remote.ESTIMATE_POSE][-1][0])
 
     # TODO These nfps should match the db
     get_cpu_utilization(id, 'mean_cpu_utilization', measurements[turtlebot_remote.CPU_MONITOR], time_range)
