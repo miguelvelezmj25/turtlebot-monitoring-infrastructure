@@ -22,7 +22,7 @@ def getTurtleBotState():
         tb = getModelStateSrv('mobile_base', '')
         q = (tb.pose.orientation.x, tb.pose.orientation.y, tb.pose.orientation.z, tb.pose.orientation.w)
         w = tf.euler_from_quaternion(q)[2]
-        v = math.sqrt(tb.twist.linear.x ** 2 + tb.twist.linear.y ** 2
+        v = math.sqrt(tb.twist.linear.x ** 2 + tb.twist.linear.y ** 2)
         x, y = self.translateGazeboToMap(tb.pose.position.x, tb.pose.position.y)
         return x, y, w, v
     except rospy.ServiceException, e:
