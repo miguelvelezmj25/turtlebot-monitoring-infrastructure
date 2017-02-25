@@ -71,12 +71,6 @@
   </include>
 
   <!-- Launch instruction graph, with initial instruction files -->
-<!--
-  <node name="ig_interpreter" pkg="ig_interpreter" type="ig_node" output="screen">
-    <param name="ig_file" value="$(find measurement)/instructions/hometogoal.ig"/>
-  </node>
--->
-  <!-- launch node to report the state of the robot -->
-  <!-- Not the publish frequency is in Hz -->
+  <node name="ig_interpreter" pkg="ig_action_server" type="ig_server.py" output="screen">
 
 </launch>
