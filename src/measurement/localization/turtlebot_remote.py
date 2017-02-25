@@ -25,6 +25,7 @@ FAIL = 'fail'
 RESULT = 'result'
 NODE_NAME = 'turtlebot_remote'
 NAVIGATION = 'map_navigation.py'
+MOVE_FORWARD = 'move_forward.py'
 SCAN_ALTERED = 'scan_altered.py'
 TF_ALTERED = 'tf_altered.py'
 MONITORS_FILE = 'monitors.py'
@@ -98,9 +99,13 @@ def measure(id, configurations):
     if os.path.exists('data/' + str(id)):
         shutil.rmtree('data/' + str(id))
     os.makedirs('data/' + str(id))
-    data_files[NAVIGATION] = open('data/' + str(id) + "/" + NAVIGATION + '.txt', 'a+', 0)
-    subprocess.call("python " + NAVIGATION + ' "' + str(configurations) + '"', shell=True,
-                    stdout=data_files[NAVIGATION])
+    # data_files[NAVIGATION] = open('data/' + str(id) + "/" + NAVIGATION + '.txt', 'a+', 0)
+    # subprocess.call("python " + NAVIGATION + ' "' + str(configurations) + '"', shell=True,
+    #                 stdout=data_files[NAVIGATION])
+
+    data_files[MOVE_FORWARD] = open('data/' + str(id) + "/" + MOVE_FORWARD + '.txt', 'a+', 0)
+    subprocess.call("python " + MOVE_FORWARD + ' 10 0.35', shell=True,
+                    stdout=data_files[MOVE_FORWARD])
 
     time.sleep(2)
     time_regex = '(?<=time: )[0-9]+.[0-9]+'
