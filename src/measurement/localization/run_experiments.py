@@ -301,7 +301,8 @@ def measure(id, environment_configurations, amcl_configurations):
                    '"{}", "{}", "{}", {}, {}, {}'.format(id, remote_host, socket.gethostname(), nfp_id, record[1],
                                                          record[0]))
 
-    isRunSafe = reduce((lambda rec_1, rec_2: rec_1[1] and rec_2[1]), is_safe_records)
+    isSafeRecordsNoTime = [isSafe for (time, isSafe) in is_safe_records]
+    isRunSafe = reduce((lambda isSafeA, isSafeB: isSafeA and isSafeB), isSafeRecordsNoTime)
     print isRunSafe
 
 
