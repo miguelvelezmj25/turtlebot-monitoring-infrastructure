@@ -104,7 +104,7 @@ def measure(id, configurations):
     #                 stdout=data_files[NAVIGATION])
 
     data_files[MOVE_FORWARD] = open('data/' + str(id) + "/" + MOVE_FORWARD + '.txt', 'a+', 0)
-    subprocess.call("python " + MOVE_FORWARD + ' 10 0.35', shell=True,
+    subprocess.call("python " + MOVE_FORWARD + ' -d 3 -s 0.68', shell=True,
                     stdout=data_files[MOVE_FORWARD])
 
     time.sleep(2)
