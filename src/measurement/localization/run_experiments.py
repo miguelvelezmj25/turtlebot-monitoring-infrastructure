@@ -272,6 +272,8 @@ def measure(id, environment_configurations, amcl_configurations):
 
     measurements = run(id, settings)
 
+    print measurements[turtlebot_remote.GROUND_TRUTH_POSE]
+    print measurements[turtlebot_remote.ESTIMATE_POSE]
     get_localization_uncertainty(id, measurements[turtlebot_remote.DURATION], measurements[turtlebot_remote.RESULT],
                                  measurements[turtlebot_remote.GROUND_TRUTH_POSE],
                                  measurements[turtlebot_remote.ESTIMATE_POSE])

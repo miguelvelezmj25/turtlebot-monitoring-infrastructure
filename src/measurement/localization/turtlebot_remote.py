@@ -108,7 +108,7 @@ def measure(id, configurations):
                     stdout=data_files[MOVE_FORWARD])
 
     time.sleep(2)
-    time_regex = '(?<=time: )[0-9]+.[0-9]+'
+    time_regex = '(?<=time: )[0-9]+.?[0-9]+'
     fail_regex = 'fail'
 
     # with open(data_files[NAVIGATION].name, 'r', 0) as content_file:
