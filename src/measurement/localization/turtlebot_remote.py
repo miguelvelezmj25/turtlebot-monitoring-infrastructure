@@ -111,7 +111,8 @@ def measure(id, configurations):
     time_regex = '(?<=time: )[0-9]+.[0-9]+'
     fail_regex = 'fail'
 
-    with open(data_files[NAVIGATION].name, 'r', 0) as content_file:
+    # with open(data_files[NAVIGATION].name, 'r', 0) as content_file:
+    with open(data_files[MOVE_FORWARD].name, 'r', 0) as content_file:
         content = content_file.read()
 
     duration = re.search(time_regex, content)
