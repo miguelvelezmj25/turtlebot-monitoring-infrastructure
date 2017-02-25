@@ -18,7 +18,7 @@ remote_host = config_parser.get(socket.gethostname(), 'simulator')
 
 MAX_RUN_TIME = 100
 MAX_EXPERIMENT_TIME = 300
-MAP_FILENAME = 'Wean-entire-floor4-waypoint-locations.json'
+MAP_FILENAME = '../maps/Wean-entire-floor4-waypoint-locations.json'
 navigation_configuration = {'target_x': 7, 'target_y': -10.5}
 
 
