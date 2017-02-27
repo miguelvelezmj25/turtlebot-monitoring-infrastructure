@@ -237,7 +237,7 @@ ig_speed_parameters_to_explore_values = [0.35, 0.68]
 ig_distance_parameters_to_explore = ['-d']
 ig_distance_parameters_to_explore_values = [3, 4, 5, 6, 7, 8, 9, 10]
 
-ig_command_parameters_to_explore_values = ['move_abs', 'move_forward']
+ig_command_parameters_to_explore_values = ['moveabs', 'forward']
 
 custom_configurations = ['min_particles 5, max_particles 5, resample_interval 20',
                          'min_particles 1000, max_particles 1000, resample_interval 1',
