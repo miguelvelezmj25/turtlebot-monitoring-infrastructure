@@ -91,12 +91,16 @@ def add_configurations_to_explore(db, configurations, values, workers=None, prio
         i += 1
 
 
-def instruction(db, commands, distances, speeds, workers=None, priority=None, iterations=6):
+def add_ig_configurations_to_explore(db, commands, instructions, distance_commands, distances_values, speed_commands, speed_values, workers=None, priority=None, iterations=6):
     for command in commands:
-        for distance in distances:
-            for speed in speeds:
-                option = command + ' -d ' + str(distance) + ' -s ' + str(speed)
-                add_configuration(db, option, workers=workers, priority=priority, iterations=iterations)
+        for instruction in instructions:
+            for distance_command in distance_commands:
+                for distances_value in distances_values:
+                    for speed_command in speed_commands:
+                        for speed_value in speed_values:
+                            option = command + ' ' + instruction + ' ' + distance_command + ' ' + str(distances_value)\
+                                     + ' ' + speed_command + ' ' + str(speed_value)
+                            add_configuration(db, option, workers=workers, priority=priority, iterations=iterations)
 
 
 def add_configuration(db, configuration, workers=None, priority=None, iterations=6):
@@ -231,13 +235,14 @@ pair_wise_configurations_values = [[(5, 10, 20, 30, 40, 50, 70, 100, 125, 150, 2
                                      1000), (5, 10, 20, 30, 40, 50, 70, 100, 125, 150, 200, 250, 300, 350, 400, 450,
                                              500, 750, 1000, 1500, 2000, 3500, 5000, 7500, 10000)]]
 
-ig_speed_parameters_to_explore = ['-s']
-ig_speed_parameters_to_explore_values = [0.35, 0.68]
+ig_speed_parameter_to_explore = ['-s']
+ig_speed_parameter_to_explore_values = [0.35, 0.68]
 
-ig_distance_parameters_to_explore = ['-d']
-ig_distance_parameters_to_explore_values = [3, 4, 5, 6, 7, 8, 9, 10]
+ig_distance_parameter_to_explore = ['-d']
+ig_distance_parameter_to_explore_values = [3, 4, 5, 6, 7, 8, 9, 10]
 
-ig_command_parameters_to_explore_values = ['moveabs', 'forward']
+ig_command_parameter_to_explore = ['-c']
+ig_command_parameter_to_explore_values = ['moveabs', 'forward']
 
 custom_configurations = ['min_particles 5, max_particles 5, resample_interval 20',
                          'min_particles 1000, max_particles 1000, resample_interval 1',
@@ -4327,7 +4332,39 @@ custom_configurations = ['min_particles 5, max_particles 5, resample_interval 20
                          'kinect_array 640, transform_tolerance 1.4',
                          'kinect_array 640, transform_tolerance 1.6',
                          'kinect_array 640, transform_tolerance 1.8',
-                         'kinect_array 640, transform_tolerance 2.0'
+                         'kinect_array 640, transform_tolerance 2.0',
+                         '-c moveabs -d 3 -s 0.35, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 3 -s 0.35, update_min_d 0.6',
+                         '-c moveabs -d 3 -s 0.68, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 3 -s 0.68, update_min_d 0.6',
+                         '-c moveabs -d 4 -s 0.35, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 4 -s 0.35, update_min_d 0.6',
+                         '-c moveabs -d 4 -s 0.68, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 4 -s 0.68, update_min_d 0.6',
+                         '-c moveabs -d 5 -s 0.35, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 5 -s 0.35, update_min_d 0.6',
+                         '-c moveabs -d 5 -s 0.68, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 5 -s 0.68, update_min_d 0.6',
+                         '-c moveabs -d 6 -s 0.35, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 6 -s 0.35, update_min_d 0.6',
+                         '-c moveabs -d 6 -s 0.68, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 6 -s 0.68, update_min_d 0.6',
+                         '-c moveabs -d 7 -s 0.35, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 7 -s 0.35, update_min_d 0.6',
+                         '-c moveabs -d 7 -s 0.68, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 7 -s 0.68, update_min_d 0.6',
+                         '-c moveabs -d 8 -s 0.35, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 8 -s 0.35, update_min_d 0.6',
+                         '-c moveabs -d 8 -s 0.68, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 8 -s 0.68, update_min_d 0.6',
+                         '-c moveabs -d 9 -s 0.35, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 9 -s 0.35, update_min_d 0.6',
+                         '-c moveabs -d 9 -s 0.68, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 9 -s 0.68, update_min_d 0.6',
+                         '-c moveabs -d 10 -s 0.35, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 10 -s 0.35, update_min_d 0.6',
+                         '-c moveabs -d 10 -s 0.68, kinect_array 550, update_min_a 0.0',
+                         '-c moveabs -d 10 -s 0.68, update_min_d 0.6'
                          ]
 
 # for configuration in custom_configurations[:2000]:
